@@ -61,6 +61,7 @@ int main()
     auto fnEx = pPlugin->getCaller("WriteImeiEx");
     //auto fn11 = pPlugin->getCaller("WriteImei");
    (*fnEx)(param);
+   
 
     auto pCallback = new CallBackImpl(&engine);
     pPlugin->setCallback(pCallback);
