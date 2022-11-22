@@ -5,22 +5,21 @@ namespace TARDIS::CORE
 
 	void SpdLog::log(LogType type,const char *msg)
 	{
-        printf(msg);
 		switch (type)
 		{
-		case LogType::TRACE:    SpdLog::Logger(m_logId)->trace(msg);    break;
-		case LogType::INFO:     SpdLog::Logger(m_logId)->info("45645645");     break;
-		case LogType::WARN:     SpdLog::Logger(m_logId)->warn(msg);     break;
-		//case TARDIS::CORE::ERROR:    SpdLog::Logger(m_logId)->error(msg);    break;
-		case LogType::CRITICAL: SpdLog::Logger(m_logId)->critical(msg); break;
+		case LogType::Trace:    SpdLog::Logger(m_logId)->trace(msg);    break;
+		case LogType::Info:     SpdLog::Logger(m_logId)->info(msg);     break;
+		case LogType::Warn:     SpdLog::Logger(m_logId)->warn(msg);     break;
+		case LogType::Error:    SpdLog::Logger(m_logId)->error(msg);    break; 
+		case LogType::Critical: SpdLog::Logger(m_logId)->critical(msg); break;
 		default:
 			break;
 		}
 	}
 
-    SpdLog::SpdLog(const std::string& id) : m_logId(id)
+    SpdLog::SpdLog(const std::string& id, const std::string& file) : m_logId(id)
     {
-        AddLogger(m_logId, "demo");
+        AddLogger(m_logId, file);
     }
 
 
@@ -29,7 +28,7 @@ namespace TARDIS::CORE
 		spdlog::drop(m_logId);
 	}
 
-	std::shared_ptr<spdlog::logger> SpdLog::Logger(const std::string id)
+	std::shared_ptr<spdlog::logger> SpdLog::Logger(const std::string& id)
 	{
 		if(!id.empty())
 		{
@@ -39,7 +38,7 @@ namespace TARDIS::CORE
 		return spdlog::default_logger();
 	}
 
-	std::shared_ptr<spdlog::logger> SpdLog::AddLogger(const std::string id, std::string fileName)
+	std::shared_ptr<spdlog::logger> SpdLog::AddLogger(const std::string& id, const std::string& fileName)
 	{
 		if(!id.empty())
 		{
@@ -50,7 +49,7 @@ namespace TARDIS::CORE
 			}
 			
 			spdlog::sink_ptr t_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(fileName, true);
-			t_sink->set_pattern("%^[%T] %n: %v%$");
+			//t_sink->set_pattern("%^[%T] %n: %v%$");
 			auto t_logger = std::make_shared<spdlog::logger>(id, t_sink);
 			spdlog::register_logger(t_logger);
 			t_logger->set_level(spdlog::level::trace);

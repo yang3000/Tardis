@@ -9,16 +9,6 @@ namespace TARDIS::CORE
         m_callerContainer(new CallerContainer())
     {};
 
-    const char* Plugin::getName()
-    {
-        return m_name.c_str();
-    }
-
-    ICaller* Plugin::getCaller(const char* fnName)
-    {
-        return m_callerContainer->get(fnName)->caller;
-    }
-
     void Plugin::parseCallerInfo(ParseCallBack cb)
     {
         for( auto it : m_callerContainer->m_slots)

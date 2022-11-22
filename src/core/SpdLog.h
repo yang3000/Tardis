@@ -13,19 +13,17 @@ namespace TARDIS::CORE
 	class SpdLog : public Log
 	{
 	public:
-        SpdLog(const std::string& id);
+        SpdLog(const std::string& id, const std::string& file = "undefine.log");
 
         ~SpdLog();
 
-        static std::shared_ptr<spdlog::logger> Logger(const std::string id = "");
+        static std::shared_ptr<spdlog::logger> Logger(const std::string& id = "");
 
-		static std::shared_ptr<spdlog::logger> AddLogger(const std::string id, const std::string file = "");
+		static std::shared_ptr<spdlog::logger> AddLogger(const std::string& id, const std::string& file = "");
 
 		static std::shared_ptr<spdlog::logger> DefaultLogger();
 
         virtual void log(LogType type,const char *msg) override;
-
-        
 
     private:
 		SpdLog(const SpdLog&) = delete;
@@ -44,8 +42,8 @@ namespace TARDIS::CORE
 //#define TDS_ERROR(...)      ::TARDIS::CORE::Log::Logger()->error(__VA_ARGS__)
 //#define TDS_CRITICAL(...)   ::TARDIS::CORE::Log::Logger()->critical(__VA_ARGS__)
 
-#define TDS_G_TRACE(...)     spdlog::trace(__VA_ARGS__)
-#define TDS_G_INFO(...)      spdlog::info(__VA_ARGS__)
-#define TDS_G_WARN(...)      spdlog::warn(__VA_ARGS__)
-#define TDS_G_ERROR(...)     spdlog::error(__VA_ARGS__)
-#define TDS_G_CRITICAL(...)  spdlog::critical(__VA_ARGS__)
+#define TDS_LOG_TRACE(...)     spdlog::trace(__VA_ARGS__)
+#define TDS_LOG_INFO(...)      spdlog::info(__VA_ARGS__)
+#define TDS_LOG_WARN(...)      spdlog::warn(__VA_ARGS__)
+#define TDS_LOG_ERROR(...)     spdlog::error(__VA_ARGS__)
+#define TDS_LOG_CRITICAL(...)  spdlog::critical(__VA_ARGS__)

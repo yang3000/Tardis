@@ -2,13 +2,13 @@
 
 namespace TARDIS::CORE
 {
-    enum LogType
+    enum class LogType
     {
-        TRACE,
-        INFO,
-        WARN,
-        ERROR,
-        CRITICAL
+        Trace = 0,
+        Info,
+        Warn,
+        Error,
+        Critical
     };
 
     class Log
@@ -19,3 +19,12 @@ namespace TARDIS::CORE
         virtual ~Log() {};
     };
 }
+
+// #define LOG_TRACE(obj, msg)      obj->log(LogType::Trace, msg)
+// #define LOG_INFO(obj, msg)       obj->log(LogType::Info, msg)
+// #define LOG_WARN(obj, msg)       obj->log(LogType::Warn, msg)
+// #define LOG_ERROR(obj, msg)      obj->log(LogType::Error, msg)
+// #define LOG_CRITICAL(obj, msg)   obj->log(LogType::Critical, msg)
+
+
+

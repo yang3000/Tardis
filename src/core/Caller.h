@@ -4,6 +4,7 @@
 #include "ICaller.h"
 #include "ValueHelper.h"
 #include <string>
+#include <assert.h>
 
 namespace TARDIS::CORE
 {
@@ -17,7 +18,7 @@ namespace TARDIS::CORE
         Caller(Fn fn, T *obj) : m_fn(fn), m_obj(obj) {}
 
         template <int... S>
-        R call(Seq<S...>, Str *params) { return (m_obj->*m_fn)(ValueHelper<Args>::fromString(std::string(params[S].buf, params[S].len))...); }
+        R call(Seq<S...>, Str *params) { assert(m_obj); assert(m_fn); return (m_obj->*m_fn)(ValueHelper<Args>::fromString(std::string(params[S].buf, params[S].len))...); }
 
         bool operator()(Str *params)
         {

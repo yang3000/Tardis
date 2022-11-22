@@ -30,6 +30,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("const T->%s\r\n", str.c_str());
 			return ValueHelper<T>::fromString(str);
 		}
 
@@ -55,6 +56,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("const T&->%s\r\n", str.c_str());
 			return ValueHelper<T>::fromString(str);
 		}
 
@@ -80,6 +82,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("const T*->%s\r\n", str.c_str());
 			return ValueHelper<T*>::fromString(str);
 		}
 
@@ -128,6 +131,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("char*->%s\r\n", str.c_str());
 			return str.c_str();
 		}
 
@@ -154,6 +158,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("std::string->%s\r\n", str.c_str());
 			return str.c_str();
 		}
 
@@ -241,6 +246,7 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
+			printf("%s\r\n", str.c_str());
 			int val = 0;
 			sscanf(str.c_str(), " %d", &val);
 
@@ -373,16 +379,15 @@ namespace TARDIS::CORE
 
 		static return_type fromString(const std::string& str)
 		{
-			unsigned long val = 0;
-			sscanf(str.c_str(), "%l64u", &val);
-
+			unsigned long long val = 0;
+			sscanf(str.c_str(), "%I64u", &val);
 			return val;
 		}
 
 		static string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%l64u", val);
+			snprintf(buff, sizeof(buff), "%I64u", val);
 
 			return std::string(buff);
 		}
