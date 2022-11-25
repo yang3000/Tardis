@@ -27,7 +27,7 @@ namespace TARDIS::CORE
 
 	Engine::Engine(std::string name) :
 		m_name(name),
-		m_engineId(Helper::getHash(name)),
+		m_engineId(std::to_string(Helper::getHash(name))),
 		m_stop(false),
 		m_running(false)
 	{};
@@ -72,7 +72,6 @@ namespace TARDIS::CORE
 
 	void Engine::run()
 	{
-		onStart();
 
 		if (runnerList.size() == 0) {
 			// RunnerEventArgs event_warn("no node");
@@ -80,6 +79,7 @@ namespace TARDIS::CORE
 			return;
 		}
 
+        onStart();
 
 		for (int i = 0; i < runnerList.size(); i++)
 		{
@@ -141,6 +141,15 @@ namespace TARDIS::CORE
 
     }
     
+    IPlugin* Engine::getPlugin(const std::string &moduleId)
+	{
+		auto it = m_plugins.find(moduleId);
+		if(it != m_plugins.end())
+		{
+			return it->second;
+		}
+		return nullptr;
+	}
     //bool Engine::onCreateModule(const EventArgs& args)
 	//{
 		// std::string moduleId = static_cast<const CORE::CreateModuleEventArgs&>(args).m_moduleId;

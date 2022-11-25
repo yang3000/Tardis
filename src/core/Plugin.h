@@ -1,12 +1,13 @@
 #pragma once
 
 
-#include "CallerContainer.h"
 #include "IPlugin.h"
 #include "fmt/core.h"
-#include "Log.h"
 #include <string>
 #include <assert.h>
+#include "CallerContainer.h"
+#include "Log.h"
+#include "Communication.h"
 
 namespace TARDIS::CORE
 {
@@ -39,15 +40,34 @@ namespace TARDIS::CORE
 
         void setLogger(Log *logger) { m_logger = logger; }
 
-        bool initialize() { return true; }
+        bool loadCallers() { return true; }
 
         const char *getName() { return m_name.c_str(); }
 
         void destroy() { delete m_self; }
 
-        void addPoolData(const char* key, const char* value) { assert(m_pFn); m_pFn->addPoolData(key, value); }
+        void addPoolData(const char* key, const char* value) 
+        { 
+            assert(m_pFn); 
+            m_pFn->addPoolData(key, value);
+        }
 
-        void addOutput(const char* key, const char* value) { assert(m_pFn); m_pFn->addOutput(key, value); }
+        void addOutput(const char *key, const char *value)
+        {
+            assert(m_pFn);
+            m_pFn->addOutput(key, value);
+        }
+
+        Communication* getCommunication(const char *moduleId)
+        {
+            assert(m_pFn);
+            Communication* pCommu = m_pFn->getCommunication(moduleId);
+            if(!pCommu)
+            {
+                //throw 
+            }
+            return pCommu;
+        }
 
     protected:
         Log *m_logger;

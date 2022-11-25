@@ -20,7 +20,10 @@ void HonorCust4Dongle::log(const char *msg)
 	m_honorCust4Dongle->m_logger->log(TARDIS::CORE::LogType::Trace, msg);
 }
 
-HonorCust4Dongle::HonorCust4Dongle(std::string name) : TARDIS::CORE::Plugin(std::move(name))
+HonorCust4Dongle::HonorCust4Dongle(std::string name) : 
+    TARDIS::CORE::Plugin(std::move(name)),
+    p_module_cust(nullptr),
+    m_honor_cust(nullptr)
 {};
 
 HonorCust4Dongle::~HonorCust4Dongle()
@@ -32,7 +35,7 @@ HonorCust4Dongle::~HonorCust4Dongle()
 	p_module_cust = nullptr;
 };
 
-bool HonorCust4Dongle::initialize()
+bool HonorCust4Dongle::loadCallers()
 {
 	LOG_INFO("load file:{}", "HonorCustomization.dll");
 	// p_module_cust = new TARDIS::DynamicModule("HonorCustomization.dll");
@@ -80,14 +83,22 @@ bool HonorCust4Dongle::initialize()
     m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, {{"Imei", "imei..."}});
 
     m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, {});
+    
+    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool {
+        LOG_INFO("running Lamda Test...");
+        return true;
+    }, {{"Imei", "imei..."}});
 
     return true;
 }
 
 bool HonorCust4Dongle::WriteImei(const char* imei, int len)
 {
-    printf("running Write Imei...\r\n");
-    printf("imei:%s, len:%d\r\n", imei, len);
+    auto commu = getCommunication("SerialPortPlugin");
+    commu->sendCommand("AT^WriteImei=43534", len);
+
+    LOG_INFO("running Write Imei...");
+    LOG_INFO("imei:{}, len:{}", imei, len);
     addPoolData("imei", imei);
     addPoolData("imei_len", TARDIS::CORE::ValueHelper<int>::toString(len).c_str());
     //m_honor_cust->WriteImei(imei);
@@ -96,8 +107,8 @@ bool HonorCust4Dongle::WriteImei(const char* imei, int len)
 
 bool HonorCust4Dongle::WriteImeiEx(const char* imei, size_t len)
 {
-    printf("running Write Imei ex...\r\n");
-    printf("imei:%s, len:%d\r\n", imei, len);
+    LOG_INFO("running Write Imei Ex...");
+    LOG_INFO("imei:{}, len:{}", imei, len);
     addPoolData("imei", imei);
     addPoolData("imei_len", TARDIS::CORE::ValueHelper<int>::toString(len).c_str());
     //m_honor_cust->WriteImei(imei);
@@ -107,8 +118,8 @@ bool HonorCust4Dongle::WriteImeiEx(const char* imei, size_t len)
 
 bool HonorCust4Dongle::WriteImeiEx1(const char* imei, size_t len)
 {
-    printf("running Write Imei ex1...\r\n");
-    printf("imei:%s, len:%d\r\n", imei, len);
+    LOG_INFO("running Write Imei Ex1...");
+    LOG_INFO("imei:{}, len:{}", imei, len);
     addPoolData("imei", imei);
     addPoolData("imei_len", TARDIS::CORE::ValueHelper<int>::toString(len).c_str());
     //m_honor_cust->WriteImei(imei);

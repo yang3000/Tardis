@@ -20,7 +20,7 @@ namespace TARDIS
 		const std::string& getModuleName() const;
 
 		template <typename Fn, typename... Args>
-		inline auto Call(const char* fnName, Args&&... args)-> typename std::result_of<Fn(Args...)>::type
+		inline auto Call(const char* fnName, Args&&... args) -> typename std::result_of<Fn(Args...)>::type
 		{
 			Fn fn = (Fn)getSymbolAddress(fnName);
 			assert(fn);

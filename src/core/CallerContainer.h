@@ -3,6 +3,7 @@
 #include "Base.h"
 #include "Caller.h"
 #include "FreeCaller.h"
+#include "LamdaCaller.h"
 #include "ValueHelper.h"
 #include <assert.h>
 #include <functional>
@@ -34,7 +35,10 @@ namespace TARDIS::CORE
 		caller(p_caller) 
 		{}
 
-		~CallerInfo() { delete caller; }
+		~CallerInfo() { 
+			printf("destroy caller:%s\r\n", name.c_str());
+			delete caller; 
+		}
 
 		ICaller *caller;
 		std::vector<ParamInfo> params;
@@ -55,11 +59,12 @@ namespace TARDIS::CORE
 
 		size_t ParamLen = sizeof...(Args);
 
-		Parameterized(std::vector<ParamInfo>& desData, std::vector<ParamInfo>& srcData) :
+		Parameterized(std::vector<ParamInfo>& desData, const std::vector<ParamInfo>& srcData) :
 			m_desData(desData),
 			m_srcData(srcData)
 		{
 			assert(ParamLen <= srcData.size());
+			desData.resize(ParamLen);
 		}
 
 		template<typename T, int I>
@@ -71,27 +76,13 @@ namespace TARDIS::CORE
 			return true;
 		}
 
-		template<int I>
-		bool addParam() { m_desData.emplace_back(); return true; }
-
-		// template<typename... T> void nothing(T...) {}
-		// template<int ...I> void setParamLen(Seq<I...>) { nothing(addParam<I>()...); }
-        // template<int ...I> void initParams(Seq<I...>) { nothing(setParam<Args, I>()...); }
-
-        template<int ...I>
-		void setParamLen(Seq<I...>) { (addParam<I>(), ...); }
-
 		template<int ...I>
 		void initParams(Seq<I...>) { (setParam<Args, I>(), ...); }
 
-		void operator()()
-		{
-			setParamLen(m_seq);
-			initParams(m_seq);
-		}
-
+		void operator()() { initParams(m_seq); }
+		
 		std::vector<ParamInfo>& m_desData;
-		std::vector<ParamInfo>& m_srcData;
+		const std::vector<ParamInfo>& m_srcData;
 	};
 
 	class CallerContainer final
@@ -101,7 +92,7 @@ namespace TARDIS::CORE
 		~CallerContainer();
 
 		template<typename T, typename R, typename...Args>
-		void registerFunctor(const char* fnName, R(T::* fn)(Args...), T* pObj, std::vector<ParamInfo> paramData)
+		void registerFunctor(const char* fnName, R(T::* fn)(Args...), T* pObj, const std::vector<ParamInfo>& paramData)
 		{
 			CallerInfo* t_fndata = new CallerInfo(fnName, new Caller<T, R, Args...>(fn, pObj));
 			Parameterized<Args...>(t_fndata->params, paramData)();
@@ -110,9 +101,24 @@ namespace TARDIS::CORE
 		}
 
 		template<typename R, typename...Args>
-		void registerFunctor(const char* fnName, R(*fn)(Args...), std::vector<ParamInfo> paramData)
+		void registerFunctor(const char* fnName, R(*fn)(Args...), const std::vector<ParamInfo>& paramData)
 		{
 			CallerInfo* t_fndata = new CallerInfo(fnName, new FreeCaller<R, Args...>(fn));
+			Parameterized<Args...>(t_fndata->params, paramData)();
+
+			addFunctor(fnName, t_fndata);
+		}
+
+		template<typename FN>
+		void registerFunctor(const char* fnName, FN fn, const std::vector<ParamInfo>& paramData)
+		{
+			registerFunctor(fnName, &FN::operator(), fn, paramData);
+		}
+
+		template<typename T, typename R, typename...Args>
+		void registerFunctor(const char* fnName, R(T::* fn)(Args...) const, T obj, const std::vector<ParamInfo>& paramData)
+		{
+			CallerInfo* t_fndata = new CallerInfo(fnName, new LamdaCaller<T, R, Args...>(obj));
 			Parameterized<Args...>(t_fndata->params, paramData)();
 
 			addFunctor(fnName, t_fndata);

@@ -3,6 +3,7 @@
 #include "ICaller.h"
 #include "Engine.h"
 #include "ValueHelper.h"
+#include "SpdLog.h"
 //#include "RunnerArgs.h"
 
 namespace TARDIS::CORE
@@ -54,7 +55,7 @@ namespace TARDIS::CORE
 	{
 
 		//RunnerArgs args(engine, this);
-
+        LOG_INFO(engine->getEngineId(), "--------------------------------");
         printf("start run:%s\r\n", m_name.c_str());
 
         

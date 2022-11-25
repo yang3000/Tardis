@@ -45,7 +45,7 @@ namespace TARDIS::CORE
 
 	bool RapidJsonParser::nodeBegin(const std::string& key)
 	{
-        printf("Begine Key:%s\r\n", key.c_str());
+        //printf("Begine Key:%s\r\n", key.c_str());
 		rapidjson::Value* value = rapidjson::Pointer(std::string(std::string("/") + key).c_str()).Get(*(m_node_stack.back().second));
 		if (value)
 		{

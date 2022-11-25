@@ -2,17 +2,20 @@
 
 #include <vector>
 #include <mutex>
+#include <assert.h>
 //#include "EventSet.h"
 #include "Helper.h"
-//#include "Db.h"
-#include "Log.h"
+#include "SpdLog.h"
 #include "Runner.h"
-#include "IPlugin.h"
+
 #include "JsonParser.h"
 #include "RapidJsonParser.h"
-//#include "FunctorContainer.h"
-//#include "RunnerHandle.h"
+#include <stdio.h>
 
+#include "IPlugin.h"
+#include "Communication.h"
+
+extern int main();
 
 namespace TARDIS::CORE
 {
@@ -33,13 +36,15 @@ namespace TARDIS::CORE
 	// 	{}
 	// 	std::shared_ptr<JsonParser> m_jsonParser;
 	// };
-
+    
 	class Engine /* : public EventSet */
 	{
 	public:
 		friend class Runner;
 
 		friend class CallBackImpl;
+
+        friend int ::main();
 
 		static const std::string EventEngineRun;
 		static const std::string EventEngineStop;
@@ -97,18 +102,25 @@ namespace TARDIS::CORE
 
 		Engine(std::string name);
 
-		~Engine() { m_plugins.clear(); };
+        ~Engine()
+        {
+            for (auto it : m_plugins)
+            {
+                it.second->destroy();
+            }
+            m_plugins.clear();
+        };
 
-		void runTask();
+        void runTask();
 
 		//bool onCreateModule(const EventArgs& args);
 
 		//static bool isNodePresent(const std::string& name);
 		//static void removeNode(const std::string& name);
 
-		//unsigned long getEngineId() { return m_engineId; };
+		const std::string& getEngineId() const { return m_engineId; };
 
-		//std::string getName() { return m_name; };
+		const std::string& getName() const { return m_name; };
 
 		//Db* getDb() { return &m_db; };
 
@@ -124,6 +136,8 @@ namespace TARDIS::CORE
 
         void addPlugin(const std::string& moduleId, IPlugin* plugin);
 
+		IPlugin* getPlugin(const std::string &moduleId);
+
         void loadPlugins();
 
 	public:
@@ -134,7 +148,7 @@ namespace TARDIS::CORE
 		void onStop();
 		void onFinish();
 
-		unsigned long       m_engineId;
+        std::string         m_engineId;
 		std::string         m_name;
 		PoolData            m_poolData;
 		//std::shared_ptr<spdlog::logger> m_thread_logger;
@@ -151,25 +165,54 @@ namespace TARDIS::CORE
         
 	};
 
-
-
     class CallBackImpl : public VCallBack
     {
     public:
 
-        CallBackImpl(Engine* engine) : m_engine(engine) {}
+        CallBackImpl(Engine* engine) : m_engine(engine) 
+		{
+			assert(m_engine);
+		}
+
+		~CallBackImpl() 
+		{
+			printf("CallBackImpl is destroyed\r\n");
+		}
 
         void addPoolData(const char* key, const char* value)
         {
-            printf( "add pool data->key:%s, value:%s", key, value);
-            printf( m_engine->m_curRunner->getName().c_str());
+			TDS_LOG_INFO("add pool data->key:{}, value:{}",  key, value);
+           // printf( m_engine->m_curRunner->getName().c_str());
             m_engine->m_poolData.emplace(key, value);
         }
 
         void addOutput(const char* key, const char* value)
         {
-            m_engine->m_curRunner->addOutput(key, value);
+			TDS_LOG_INFO("add output->key:{}, value:{}",  key, value);
+			if(m_engine->m_curRunner)
+			{
+				m_engine->m_curRunner->addOutput(key, value);
+			}
         }
+
+		Communication* getCommunication(const char* moduleId)
+		{
+			IPlugin* plugin = m_engine->getPlugin(moduleId);
+			if(!plugin)
+			{
+				TDS_LOG_ERROR("can not find plugin:{}",  moduleId);
+				return nullptr;
+			}
+
+			Communication* pCommu = dynamic_cast<Communication*>(plugin);
+			if(!pCommu)
+			{
+				TDS_LOG_ERROR("can not from plugin[{}] to communication",  moduleId);
+				return nullptr;
+			}
+
+			return pCommu;
+		}
 
     private:
         Engine* m_engine;

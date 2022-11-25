@@ -5,6 +5,8 @@
 #include "ValueHelper.h"
 #include <string>
 #include <assert.h>
+#include <type_traits>
+
 
 namespace TARDIS::CORE
 {
@@ -22,8 +24,16 @@ namespace TARDIS::CORE
 
         bool operator()(Str *params)
         {
-            R res = call(m_seq, params);
-            return true;
+            if (!std::is_same<R, void>::value)
+            {
+                R res = call(m_seq, params);
+                return !!res;
+            }
+            else
+            {
+                call(m_seq, params);
+                return true;
+            }
         }
 
     private:

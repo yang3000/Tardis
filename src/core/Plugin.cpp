@@ -6,7 +6,9 @@ namespace TARDIS::CORE
     Plugin::Plugin(std::string name) :
         m_name(std::move(name)),
         m_self(this),
-        m_callerContainer(new CallerContainer())
+        m_callerContainer(new CallerContainer()),
+        m_pFn(nullptr)
+
     {};
 
     void Plugin::parseCallerInfo(ParseCallBack cb)

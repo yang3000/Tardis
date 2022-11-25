@@ -30,11 +30,11 @@ namespace TARDIS::CORE
 
 	std::shared_ptr<spdlog::logger> SpdLog::Logger(const std::string& id)
 	{
-		if(!id.empty())
-		{
-			auto logger = spdlog::get(id);
-			return logger ? logger : spdlog::default_logger();
-		}
+		// if(!id.empty())
+		// {
+		// 	auto logger = spdlog::get(id);
+		// 	return logger ? logger : spdlog::default_logger();
+		// }
 		return spdlog::default_logger();
 	}
 

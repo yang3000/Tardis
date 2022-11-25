@@ -5,6 +5,7 @@
 #include "DynamicModule.h"
 #include "JsonHandler.h"
 #include "RapidJsonParser.h"
+#include "Communication.h"
 
 #include "Engine.h"
 
@@ -14,7 +15,10 @@ typedef TARDIS::CORE::IPlugin *(*CreatePlugin)();
 
 int main()
 {
-    auto log = new SpdLog("demo");
+
+    Engine engine{"testEngine"};
+
+    auto log = new SpdLog(engine.getEngineId());
     log->log(LogType::Info, "3232");
 
     TDS_LOG_INFO("{}", 2131);
@@ -27,10 +31,8 @@ int main()
     // reader.Parse(ss, handler);
 
     std::shared_ptr<RapidJsonParser> jsonParser = std::make_shared<RapidJsonParser>();
-    jsonParser->parseJsonFile("C:\\Users\\yangh\\Desktop\\Tardis\\bin\\Debug\\sequence.json");
+    jsonParser->parseJsonFile("sequence.json");
     TDS_LOG_INFO(jsonParser->get("version"));
-
-    Engine engine("testEngine");
 
     if(jsonParser->nodeBegin("sequences"))
     {
@@ -38,20 +40,25 @@ int main()
         jsonParser->nodeEnd();
     }
 
+    auto pCallback = std::make_shared<CallBackImpl>(&engine);
+
     TARDIS::DynamicModule* p_dyModule = new TARDIS::DynamicModule("honor_cust_lib.dll");
     auto pPlugin = p_dyModule->Call<CreatePlugin>("CreatePlugin");
     pPlugin->setLogger(log);
-    pPlugin->initialize();
+    pPlugin->loadCallers();
+    pPlugin->setCallback(pCallback.get());
     pPlugin->parseCallerInfo([](const char *name, Param *params, unsigned count)
     { 
-        printf("Method:%s\r\n", name);
+        TDS_LOG_INFO("Method:{}", name);
         for (int i = 0; i < count; ++i)
         {
-            printf("%s[%s]:%s\r\n",params[i].name.buf,params[i].type.buf,params[i].desc.buf); 
+            TDS_LOG_INFO("Param{}:{}[{}]:{}", i, params[i].name.buf, params[i].type.buf, params[i].desc.buf);
         }
-        printf("--------------------------------\r\n");
+        TDS_LOG_INFO("--------------------------------");
+
     });
 
+    TDS_LOG_INFO("Call WriteImeiEx directly...");
     Str param[2];
     param[0].buf = "111111123456";
     param[0].len = strlen(param[0].buf);
@@ -60,86 +67,57 @@ int main()
     auto fn11 = pPlugin->getCaller("WriteImei");
     auto fnEx = pPlugin->getCaller("WriteImeiEx");
     //auto fn11 = pPlugin->getCaller("WriteImei");
-   (*fnEx)(param);
-   
+    (*fnEx)(param);
+    TDS_LOG_INFO("--------------------------------");
 
-    auto pCallback = new CallBackImpl(&engine);
-    pPlugin->setCallback(pCallback);
-    engine.addPlugin("8708AB25-1C86-45bd-ADEF-06FD5BCA03DA", pPlugin);
+    //===================================================
+    TARDIS::DynamicModule* p_SerialPortDyModule = new TARDIS::DynamicModule("serial_port_lib.dll");
+    auto pSerialPortPlugin = p_SerialPortDyModule->Call<CreatePlugin>("CreatePlugin");
+    pSerialPortPlugin->setLogger(log);
+    pSerialPortPlugin->loadCallers();
+    pSerialPortPlugin->setCallback(pCallback.get());
+    pSerialPortPlugin->parseCallerInfo([](const char *name, Param *params, unsigned count)
+    { 
+        TDS_LOG_INFO("Method:{}", name);
+        for (UInt i = 0; i < count; ++i)
+        {
+            TDS_LOG_INFO("Param{}:{}[{}]:{}", i, params[i].name.buf, params[i].type.buf, params[i].desc.buf);
+        }
+        TDS_LOG_INFO("--------------------------------");
+    });
+
+    TARDIS::Communication *pCommunication = dynamic_cast<TARDIS::Communication *>(pSerialPortPlugin);
+    if (pCommunication)
+    {
+        pCommunication->sendCommand("4353445", 7);
+    }
+    //===================================================
+
+
+    engine.addPlugin("WriteImeiPlugin", pPlugin);
+    engine.addPlugin("SerialPortPlugin", pSerialPortPlugin);
+
+    TDS_LOG_INFO("Run Task...");
     engine.runTask();
+    TDS_LOG_INFO("--------------------------------");
 
     while(engine.isRunning())
     {
-        printf("engine is running, waitting...\r\n");
+        TDS_LOG_INFO("engine is running, waitting...");
         Sleep(100);
     }
 
-    return 1;
+    TDS_LOG_INFO("--------------------------------");
 
-    TARDIS::DynamicModule* p_mod_honor = new TARDIS::DynamicModule("honor_cust_lib.dll");
-    IPlugin* p_plugin_honor = p_mod_honor->Call<CreatePlugin>("CreatePlugin");
-    p_plugin_honor->setLogger(log);
-    p_plugin_honor->initialize();
+    TDS_LOG_INFO("Print engine pool data...");
+    for(auto it : engine.m_poolData)
+    {
+        TDS_LOG_INFO("{}->{}", it.first, it.second);
+    }
+    TDS_LOG_INFO("--------------------------------");
+    pCallback.reset();
+    //delete p_dyModule;
+    //delete p_SerialPortDyModule;
 
-    p_plugin_honor->parseCallerInfo([](const char *name, Param *params, unsigned count)
-    { 
-        printf("Method:%s\r\n", name);
-        for (int i = 0; i < count; ++i)
-        {
-            printf("%s[%s]:%s\r\n",params[i].name.buf,params[i].type.buf,params[i].desc.buf); 
-        }
-        printf("--------------------------------\r\n");
-    });
-
-    auto fn = p_plugin_honor->getCaller("EnumDonglePorts");
-    (*fn)(nullptr);
-
-    auto fn_test = p_plugin_honor->getCaller("TestFreeFn");
-    (*fn_test)(nullptr);
-
-    TARDIS::CORE::ICaller *caller = p_plugin_honor->getCaller("InitializeConnection");
-    Str params[2];
-    params[0].buf = "111111123456";
-    params[0].len = strlen(params[0].buf);
-    params[1].buf = "0";
-    params[1].len = strlen(params[1].buf);
-    (*caller)(params);
-
-    // TARDIS::DynamicModule* p_mod = new TARDIS::DynamicModule("write_imei_dll.dll");
-    // IPlugin* p_plugin = p_mod->Call<CreatePlugin>("CreatePlugin");
-
-    // p_plugin->parseCallerInfo([](const char *name, Param *params, unsigned count)
-    // { 
-    //     printf("Method:%s\r\n", name);
-    //     for (int i = 0; i < count; ++i)
-    //     {
-    //         printf("%s[%s]:%s\r\n",params[i].name.buf,params[i].type.buf,params[i].desc.buf); 
-    //     }
-    //     printf("--------------------------------\r\n");
-    // });
-
-    // //p_plugin->setLogger(log);
-
-    // TARDIS::CORE::ICaller *caller = p_plugin->getCaller("WriteImei");
-    // Str params[2];
-    // params[0].buf = "111111123456";
-    // params[0].len = strlen(params[0].buf);
-    // params[1].buf = "12";
-    // params[1].len = strlen(params[1].buf);
-    // (*caller)(params);
-
-    // auto fn = p_plugin->getCaller("EnumDonglePorts");
-    // (*fn)(nullptr);
-
-    // auto fn_test = p_plugin->getCaller("TestFreeFn");
-    // (*fn_test)(nullptr);
-
-    // TARDIS::CORE::ICaller* caller = p_plugin->getCaller("InitializeConnection");
-	// Str params[2];
-	// params[0].buf = "111111123456";
-	// params[0].len = strlen(params[0].buf);
-	// params[1].buf = "0";
-	// params[1].len = strlen(params[1].buf);
-    // (*caller)(params);
     return 1;
 }

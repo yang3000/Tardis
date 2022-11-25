@@ -1,5 +1,9 @@
 # 设置变量
-SET(LIBHELLO_SRC ./WriteImeiPlugin.h ./WriteImeiPlugin.cpp ../../src/core/CallerContainer.cpp ../../src/core/Plugin.cpp)
+SET(LIBHELLO_SRC 
+./WriteImeiPlugin.h 
+./WriteImeiPlugin.cpp 
+../../src/core/CallerContainer.cpp 
+../../src/core/Plugin.cpp)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../lib_out)
 
 # 第一个参数为你需要构建的dll的名字，第二个为类型

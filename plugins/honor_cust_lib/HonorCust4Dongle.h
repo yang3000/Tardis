@@ -15,7 +15,7 @@ public:
 	
 	~HonorCust4Dongle();
 
-	virtual bool initialize() override;
+	virtual bool loadCallers() override;
 
 
     bool WriteImei(const char* imei, int len);

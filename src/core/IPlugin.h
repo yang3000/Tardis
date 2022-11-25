@@ -2,16 +2,19 @@
 
 #include "Base.h"
 
+namespace TARDIS
+{
+    class Communication;
+}
+
 namespace TARDIS::CORE
 {
-
     struct VCallBack
     {
         virtual void addPoolData(const char* key, const char* value) = 0;
         virtual void addOutput(const char* key, const char* value) = 0;
+        virtual Communication* getCommunication(const char* moduleId) = 0;
     };
-
-    //typedef void (*AddPoolData)(const char* key, const char* value);
 
     class ICaller;
 
@@ -22,7 +25,7 @@ namespace TARDIS::CORE
     public:
         virtual void setLogger(Log* logger) = 0;
 
-        virtual bool initialize() = 0;
+        virtual bool loadCallers() = 0;
 
         virtual ICaller* getCaller(const char* fnName) = 0;
 

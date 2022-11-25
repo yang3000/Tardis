@@ -1,5 +1,11 @@
 # 设置变量
-SET(HONOR_CUST_LIB_SRC ./HonorCust4Dongle.h ./HonorCust4Dongle.cpp ../../src/core/Plugin.cpp ../../src/core/CallerContainer.cpp ../../src/core/DynamicModule.cpp)
+SET(HONOR_CUST_LIB_SRC 
+./HonorCust4Dongle.h 
+./HonorCust4Dongle.cpp 
+../../src/core/Plugin.cpp 
+../../src/core/CallerContainer.cpp 
+../../src/core/DynamicModule.cpp)
+
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
 
 # 第一个参数为你需要构建的dll的名字，第二个为类型
@@ -12,3 +18,5 @@ SET_TARGET_PROPERTIES(honor_cust_lib PROPERTIES LINKER_LANGUAGE C
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
         OUTPUT_NAME "honor_cust_lib"
         PREFIX "")
+
+target_compile_features(honor_cust_lib PUBLIC cxx_auto_type)
