@@ -65,29 +65,41 @@ bool HonorCust4Dongle::loadCallers()
 
 	// registerFunctor("TestFreeFn", {}, test);
 
-	m_callerContainer->registerFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, {
-                    {"Imei", "imei..."}, 
-					{"Len", "length..."}
+	m_callerContainer->registerFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, 
+    {
+        {"Imei", "imei..."}, 
+		{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, {
-                    {"Imei", "imei..."}, 
-					{"Len", "length..."}
+    m_callerContainer->registerFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, 
+    {
+        {"Imei", "imei..."}, 
+		{"Len", "length..."}
     });
 
-        m_callerContainer->registerFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, {
-                    {"Imei", "imei..."}, 
-					{"Len", "length..."}
+    m_callerContainer->registerFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, 
+    {
+        {"Imei", "imei..."}, 
+		{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, {{"Imei", "imei..."}});
+    m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, 
+    {
+        {"Imei", "imei..."}
+    });
 
-    m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, {});
+    m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, 
+    {
+    });
     
-    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool {
+    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool 
+    {
         LOG_INFO("running Lamda Test...");
         return true;
-    }, {{"Imei", "imei..."}});
+    }, 
+    {
+        {"Imei", "imei..."}
+    });
 
     return true;
 }

@@ -36,7 +36,7 @@ int main()
 
     if(jsonParser->nodeBegin("sequences"))
     {
-        engine.onDeserialize(jsonParser);
+        Engine::OnDeserialize(jsonParser);
         jsonParser->nodeEnd();
     }
 

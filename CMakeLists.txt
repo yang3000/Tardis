@@ -13,6 +13,7 @@ include_directories(vendor/spdlog/include)
 include_directories(vendor/rapidjson/include)
 
 include_directories(src/core)
+include_directories(src/ui)
 include_directories(src/communication)
 
 #include_directories(src/lib)

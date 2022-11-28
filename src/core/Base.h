@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+#include <utility> 
 #include <type_traits>
 
 #   ifndef TARDIS_EXPORTS
@@ -60,3 +62,38 @@ template<typename T> struct CheckParam <T> { static constexpr bool isValid = Val
 
 // template <typename T>
 // struct function_traits : public function_traits<decltype(&T::operator())> {};
+
+
+
+template <typename R, typename... ArgTypes>
+auto deduce_std_function(R(*)(ArgTypes...))->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...))->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...) const)->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...) &)->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&)->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...) && )->std::function<R(ArgTypes...)>;
+
+template <typename F, typename R, typename... ArgTypes>
+auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&&)->std::function<R(ArgTypes...)>;
+
+template <typename Function>
+auto deduce_std_function(Function)
+-> decltype(deduce_std_function_impl(&Function::operator()));
+
+template <typename Function>
+using deduce_std_function_t = decltype(deduce_std_function(std::declval<Function>()));
+
+template <typename F>
+auto to_std_function(F&& fn) -> deduce_std_function_t<F> {
+	return deduce_std_function_t<F>(std::forward<F>(fn));
+}

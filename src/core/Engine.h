@@ -72,7 +72,7 @@ namespace TARDIS::CORE
 		// 	return true;
 		// }
 
-		static inline bool onDeserialize(std::shared_ptr<CORE::RapidJsonParser> json_node)
+		static inline bool OnDeserialize(std::shared_ptr<CORE::RapidJsonParser> json_node)
 		{
 			//CORE::ValueHelper<size_t>::fromString(json_node->get<std::string>("id"));
 			//json_node->get<std::string>("name");
@@ -142,6 +142,7 @@ namespace TARDIS::CORE
 
 	public:
 		static RunnerList   runnerList;
+
 	private:
 		void run();
 		void onStart();
