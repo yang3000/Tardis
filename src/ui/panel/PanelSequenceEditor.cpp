@@ -43,6 +43,12 @@ namespace TARDIS::UI
     void PanelSequenceEditor::drawImpl()
     {
         ImGui::Begin("Sequence Editor");
+
+        if(ImGui::Button("Run"))
+        {
+            
+        }
+
         
         if (ImGui::BeginTable("Sequences", 3, ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_SizingFixedFit))
         {
