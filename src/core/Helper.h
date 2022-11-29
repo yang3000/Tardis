@@ -12,9 +12,14 @@ namespace TARDIS::CORE
 	class TARDIS_EXPORT Helper
 	{
 	public:
-		static size_t getThreadId()
+		// static size_t getThreadId()
+		// {
+		// 	return std::hash<std::thread::id>()(std::this_thread::get_id());
+		// }
+
+		static std::thread::id getThreadId()
 		{
-			return std::hash<std::thread::id>()(std::this_thread::get_id());
+			return std::this_thread::get_id();
 		}
 
 		template <typename T>

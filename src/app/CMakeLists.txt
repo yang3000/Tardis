@@ -1,5 +1,6 @@
 set( CORE_SOURCE_FILES
-    Application.cpp
+    #Application.cpp
+    Test.cpp
     ../core/SpdLog.cpp 
     ../core/DynamicModule.cpp 
     ../core/RapidJsonParser.cpp 
@@ -22,6 +23,7 @@ set( CORE_SOURCE_FILES
     ../ui/panel/PanelSequenceEditor.cpp
 )
 #add_executable(main main.cpp  ${CORE_SOURCE_FILES})
-add_executable(tardis Tardis.cpp  ${CORE_SOURCE_FILES})
+#add_executable(tardis Tardis.cpp  ${CORE_SOURCE_FILES})
+add_executable(tardis Test.cpp  ${CORE_SOURCE_FILES})
 
 target_link_libraries(tardis DbgHelp.lib d3d12.lib d3dcompiler.lib dxgi.lib)

@@ -56,7 +56,7 @@ namespace TARDIS::CORE
 
 		//RunnerArgs args(engine, this);
         LOG_INFO(engine->getEngineId(), "--------------------------------");
-        printf("start run:%s\r\n", m_name.c_str());
+        LOG_INFO(engine->getEngineId(), "start run:{}", m_name);
 
         
 
@@ -65,14 +65,17 @@ namespace TARDIS::CORE
         {
             return false;
         }
-        printf("find module:%s\r\n", m_moduleId.c_str());
+
+        LOG_INFO(engine->getEngineId(), "find module:{}", m_moduleId);
+
 
         ICaller *pCaller = it->second->getCaller(m_caller.c_str());
         if (!pCaller)
         {
             return false;
         }
-        printf("find caller:%s\r\n", m_caller.c_str());
+        LOG_INFO(engine->getEngineId(), "find caller:{}", m_caller);
+
 
         Str* params = nullptr;
         int param_count = m_params.size();

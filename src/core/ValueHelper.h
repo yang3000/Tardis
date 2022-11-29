@@ -30,7 +30,6 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("const T->%s\r\n", str.c_str());
 			return ValueHelper<T>::fromString(str);
 		}
 
@@ -56,7 +55,6 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("const T&->%s\r\n", str.c_str());
 			return ValueHelper<T>::fromString(str);
 		}
 
@@ -82,7 +80,6 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("const T*->%s\r\n", str.c_str());
 			return ValueHelper<T*>::fromString(str);
 		}
 
@@ -125,13 +122,11 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("string");
-
 			return type;
 		}
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("char*->%s\r\n", str.c_str());
 			return str.c_str();
 		}
 
@@ -158,7 +153,6 @@ namespace TARDIS::CORE
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("std::string->%s\r\n", str.c_str());
 			return str.c_str();
 		}
 
@@ -240,16 +234,13 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("int");
-
 			return type;
 		}
 
 		static inline return_type fromString(const std::string& str)
 		{
-			printf("%s\r\n", str.c_str());
 			int val = 0;
 			sscanf(str.c_str(), " %d", &val);
-
 			return val;
 		}
 
@@ -257,7 +248,6 @@ namespace TARDIS::CORE
 		{
 			char buff[64];
 			snprintf(buff, sizeof(buff), "%d", val);
-
 			return std::string(buff);
 		}
 	};
@@ -274,7 +264,6 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("uint");
-
 			return type;
 		}
 
@@ -282,7 +271,6 @@ namespace TARDIS::CORE
 		{
 			unsigned int val = 0;
 			sscanf(str.c_str(), "%u", &val);
-
 			return val;
 		}
 
@@ -290,7 +278,6 @@ namespace TARDIS::CORE
 		{
 			char buff[64];
 			snprintf(buff, sizeof(buff), "%u", val);
-
 			return std::string(buff);
 		}
 	};
@@ -307,7 +294,6 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("long");
-
 			return type;
 		}
 
@@ -315,7 +301,6 @@ namespace TARDIS::CORE
 		{
 			long val = 0;
 			sscanf(str.c_str(), " %l", &val);
-
 			return val;
 		}
 
@@ -323,7 +308,6 @@ namespace TARDIS::CORE
 		{
 			char buff[64];
 			snprintf(buff, sizeof(buff), "%d", val);
-
 			return std::string(buff);
 		}
 	};
@@ -340,7 +324,6 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("ulong");
-
 			return type;
 		}
 
@@ -348,7 +331,6 @@ namespace TARDIS::CORE
 		{
 			unsigned long val = 0;
 			sscanf(str.c_str(), "%lu", &val);
-
 			return val;
 		}
 
@@ -373,7 +355,6 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("ulonglong");
-
 			return type;
 		}
 
@@ -388,7 +369,6 @@ namespace TARDIS::CORE
 		{
 			char buff[64];
 			snprintf(buff, sizeof(buff), "%I64u", val);
-
 			return std::string(buff);
 		}
 	};
@@ -405,7 +385,6 @@ namespace TARDIS::CORE
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("bool");
-
 			return type;
 		}
 

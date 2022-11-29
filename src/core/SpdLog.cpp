@@ -1,4 +1,5 @@
 #include "SpdLog.h"
+#include "Helper.h"
 
 namespace TARDIS::CORE
 {
@@ -7,10 +8,10 @@ namespace TARDIS::CORE
 	{
 		switch (type)
 		{
-		case LogType::Trace:    SpdLog::Logger(m_logId)->trace(msg);    break;
-		case LogType::Info:     SpdLog::Logger(m_logId)->info(msg);     break;
-		case LogType::Warn:     SpdLog::Logger(m_logId)->warn(msg);     break;
-		case LogType::Error:    SpdLog::Logger(m_logId)->error(msg);    break; 
+		case LogType::Trace:    SpdLog::Logger(m_logId)->trace   (msg); break;
+		case LogType::Info:     SpdLog::Logger(m_logId)->info    (msg); break;
+		case LogType::Warn:     SpdLog::Logger(m_logId)->warn    (msg); break;
+		case LogType::Error:    SpdLog::Logger(m_logId)->error   (msg); break; 
 		case LogType::Critical: SpdLog::Logger(m_logId)->critical(msg); break;
 		default:
 			break;
@@ -49,7 +50,7 @@ namespace TARDIS::CORE
 			}
 			
 			spdlog::sink_ptr t_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(fileName, true);
-			//t_sink->set_pattern("%^[%T] %n: %v%$");
+			t_sink->set_pattern("%^[%T] %t %n: %v%$");
 			auto t_logger = std::make_shared<spdlog::logger>(id, t_sink);
 			spdlog::register_logger(t_logger);
 			t_logger->set_level(spdlog::level::trace);
@@ -75,5 +76,15 @@ namespace TARDIS::CORE
         }
 
 		return spdlog::default_logger();
+	}
+
+	std::shared_ptr<spdlog::logger> SpdLog::DefaultLogger()
+	{
+		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		console_sink->set_pattern("[Tardis][%t][%^%l%$] %v");
+		auto logger = std::make_shared<spdlog::logger>("Default", console_sink);
+		logger->set_level(spdlog::level::trace);
+		spdlog::set_default_logger(logger);
+		return logger;
 	}
 }

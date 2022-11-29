@@ -3,13 +3,20 @@
 #include "HonorCust4Dongle.h"
 #include "DynamicModule.h"
 #include "IHonorCustomizationForDongle.h"
+#include "Helper.h"
 
 typedef TARDIS::IHonorCustomization* (*ImportModule)();
 
-bool test()
+void test()
 {
-	printf("test");
-	return true;
+    HonorCust4Dongle::m_honorCust4Dongle->log("test");
+	return;
+}
+
+void test_free(int a)
+{
+    HonorCust4Dongle::m_honorCust4Dongle->log("test free->");
+	return;
 }
 
 
@@ -17,7 +24,7 @@ HonorCust4Dongle* HonorCust4Dongle::m_honorCust4Dongle = nullptr;
 
 void HonorCust4Dongle::log(const char *msg)
 {
-	m_honorCust4Dongle->m_logger->log(TARDIS::CORE::LogType::Trace, msg);
+	m_honorCust4Dongle->m_logger->log(TARDIS::CORE::LogType::Info, msg);
 }
 
 HonorCust4Dongle::HonorCust4Dongle(std::string name) : 
@@ -65,41 +72,38 @@ bool HonorCust4Dongle::loadCallers()
 
 	// registerFunctor("TestFreeFn", {}, test);
 
-	m_callerContainer->registerFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, 
-    {
-        {"Imei", "imei..."}, 
-		{"Len", "length..."}
+	m_callerContainer->registerFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, {
+                    {"Imei", "imei..."}, 
+					{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, 
-    {
-        {"Imei", "imei..."}, 
-		{"Len", "length..."}
+    m_callerContainer->registerFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, {
+                    {"Imei", "imei..."}, 
+					{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, 
-    {
-        {"Imei", "imei..."}, 
-		{"Len", "length..."}
+        m_callerContainer->registerFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, {
+                    {"Imei", "imei..."}, 
+					{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, 
-    {
-        {"Imei", "imei..."}
-    });
+    m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, {{"Imei", "imei..."}});
 
-    m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, 
-    {
-    });
+    m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, {});
+
+    m_callerContainer->registerFunctor("TestFreeCaller", test, {});
     
-    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool 
-    {
+    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool {
         LOG_INFO("running Lamda Test...");
         return true;
-    }, 
-    {
-        {"Imei", "imei..."}
-    });
+    }, {{"Imei", "imei..."}});
+
+    m_callerContainer->registerFunctor("TestLamdaCaller", [this](const char* msg) {
+        LOG_INFO("running  test lamda caller...(msg:{})", msg);
+    }, {{"Str", "str..."}});
+
+    std::function<void(int)> funcCaller = test_free;
+    m_callerContainer->registerFunctor("TestFunctionalCaller", funcCaller, {{"Number", "num..."}});
 
     return true;
 }
@@ -107,7 +111,15 @@ bool HonorCust4Dongle::loadCallers()
 bool HonorCust4Dongle::WriteImei(const char* imei, int len)
 {
     auto commu = getCommunication("SerialPortPlugin");
-    commu->sendCommand("AT^WriteImei=43534", len);
+    if (commu)
+    {
+        commu->sendCommand("AT^WriteImei=43534", len);
+    }
+    else
+    {
+        LOG_ERROR("can not find SerialPortPlugin plugin...");
+
+    }
 
     LOG_INFO("running Write Imei...");
     LOG_INFO("imei:{}, len:{}", imei, len);
@@ -140,13 +152,12 @@ bool HonorCust4Dongle::WriteImeiEx1(const char* imei, size_t len)
 
 bool HonorCust4Dongle::Test1(const char *imei)
 {
-    printf("running Test1...\r\n");
+    LOG_INFO("running Test1...");
     return true;
-
 }
 bool HonorCust4Dongle::Test2()
 {
-    printf("running Test2...\r\n");
+    LOG_INFO("running Test2...");
     return true;
 
 }

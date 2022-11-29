@@ -91,37 +91,54 @@ namespace TARDIS::CORE
 		CallerContainer() = default;
 		~CallerContainer();
 
+		// 成员函数绑定
 		template<typename T, typename R, typename...Args>
 		void registerFunctor(const char* fnName, R(T::* fn)(Args...), T* pObj, const std::vector<ParamInfo>& paramData)
 		{
 			CallerInfo* t_fndata = new CallerInfo(fnName, new Caller<T, R, Args...>(fn, pObj));
 			Parameterized<Args...>(t_fndata->params, paramData)();
-
 			addFunctor(fnName, t_fndata);
 		}
 
+		// 自由函数绑定
 		template<typename R, typename...Args>
 		void registerFunctor(const char* fnName, R(*fn)(Args...), const std::vector<ParamInfo>& paramData)
 		{
 			CallerInfo* t_fndata = new CallerInfo(fnName, new FreeCaller<R, Args...>(fn));
 			Parameterized<Args...>(t_fndata->params, paramData)();
-
 			addFunctor(fnName, t_fndata);
 		}
 
-		template<typename FN>
-		void registerFunctor(const char* fnName, FN fn, const std::vector<ParamInfo>& paramData)
+		// std::function函数绑定
+		template<typename R, typename...Args>
+		void registerFunctor(const char* fnName, std::function<R(Args...)> Fn, const std::vector<ParamInfo>& paramData)
 		{
-			registerFunctor(fnName, &FN::operator(), fn, paramData);
-		}
-
-		template<typename T, typename R, typename...Args>
-		void registerFunctor(const char* fnName, R(T::* fn)(Args...) const, T obj, const std::vector<ParamInfo>& paramData)
-		{
-			CallerInfo* t_fndata = new CallerInfo(fnName, new LamdaCaller<T, R, Args...>(obj));
+			CallerInfo *t_fndata = new CallerInfo(fnName, new FreeCaller<R, Args...>(Fn));
 			Parameterized<Args...>(t_fndata->params, paramData)();
-
 			addFunctor(fnName, t_fndata);
+		}
+
+		// lamda表达式绑定
+		template<typename FN>
+		void registerFunctor(const char* fnName, FN&& fn, const std::vector<ParamInfo>& paramData)
+		{
+			registerFunctor(fnName, &FN::operator(), std::forward<FN>(fn), paramData);
+		}
+
+		// const类型(默认)lamda表达式绑定
+		template<typename T, typename R, typename...Args>
+		void registerFunctor(const char* fnName, R(T::*)(Args...) const, T&& obj, const std::vector<ParamInfo>& paramData)
+		{
+			using FnType = std::function<R(Args...)>;
+			registerFunctor(fnName, FnType(obj), paramData);
+		}
+
+		// mutable lamda表达式绑定
+		template<typename T, typename R, typename...Args>
+		void registerFunctor(const char* fnName, R(T::*)(Args...), T&& obj, const std::vector<ParamInfo>& paramData)
+		{
+			using FnType = std::function<R(Args...)>;
+			registerFunctor(fnName, FnType(std::forward<T>(obj)), paramData);
 		}
 
 		CallerInfo* get(const std::string& name);
