@@ -48,15 +48,15 @@ int main()
     pPlugin2->setLogger(log2);
     pPlugin2->loadCallers();
     pPlugin2->setCallback(pCallback2.get());
-    pPlugin1->parseCallerInfo([](const char *name, Param *params, unsigned count)
-    { 
-        TDS_LOG_INFO("Method:{}", name);
-        for (int i = 0; i < count; ++i)
-        {
-            TDS_LOG_INFO("Param{}:{}[{}({})]:{}", i, params[i].name.buf, params[i].type.buf, params[i].abbr.buf, params[i].desc.buf);
-        }
-        TDS_LOG_INFO("--------------------------------");
-    });
+    // pPlugin1->parseCallerInfo([](const char *name, Param *params, unsigned count)
+    // { 
+    //     TDS_LOG_INFO("Method:{}", name);
+    //     for (int i = 0; i < count; ++i)
+    //     {
+    //         TDS_LOG_INFO("Param{}:{}[{}]:{}", i, params[i].name.buf, params[i].type.buf, params[i].desc.buf);
+    //     }
+    //     TDS_LOG_INFO("--------------------------------");
+    // });
     // TDS_LOG_INFO("Call WriteImeiEx directly...");
     // Str param[2];
     // param[0].buf = "111111123456";

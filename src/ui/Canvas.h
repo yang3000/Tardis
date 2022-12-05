@@ -8,6 +8,10 @@ namespace TARDIS::UI
 	class Canvas : public IDrawable
 	{
 	public:
+        ~Canvas()
+        {
+            printf("destroy Canvas\r\n");
+        }
 		void addPanel(APanel& p_panel);
 
 		void removePanel(APanel& p_panel);

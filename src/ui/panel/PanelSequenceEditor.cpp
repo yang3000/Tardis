@@ -46,7 +46,7 @@ namespace TARDIS::UI
 
         if(ImGui::Button("Run"))
         {
-            
+            //RunnerSelectedEvent.invoke()
         }
 
         
@@ -89,6 +89,7 @@ namespace TARDIS::UI
                 if(ImGui::Selectable(runnerList[test_n]->getName().c_str(), seleted_col == test_n, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                 {
                     seleted_col = test_n;
+                    RunnerSelectedEvent.invoke(runnerList[test_n]);
                 }
 
                 //if (e->UiSelectAndScrollToTest == test)

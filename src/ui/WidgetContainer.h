@@ -15,6 +15,8 @@ namespace TARDIS::UI
 	class WidgetContainer
 	{
 	public:
+        ~WidgetContainer();
+
 		void removeWidget(AWidget& p_widget);
 
 		void removeAllWidgets();

@@ -72,38 +72,42 @@ bool HonorCust4Dongle::loadCallers()
 
 	// registerFunctor("TestFreeFn", {}, test);
 
-	m_callerContainer->registerFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, {
+	RegisterFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, 
+    {
                     {"Imei", "imei..."}, 
 					{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, {
+    RegisterFunctor("WriteImeiEx", &HonorCust4Dongle::WriteImeiEx, this, 
+    {
                     {"Imei", "imei..."}, 
 					{"Len", "length..."}
     });
 
-        m_callerContainer->registerFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, {
+    RegisterFunctor("WriteImeiEx1", &HonorCust4Dongle::WriteImeiEx1, this, 
+    {
                     {"Imei", "imei..."}, 
 					{"Len", "length..."}
     });
 
-    m_callerContainer->registerFunctor("Test1", &HonorCust4Dongle::Test1, this, {{"Imei", "imei..."}});
+    RegisterFunctor("Test1", &HonorCust4Dongle::Test1, this, {{"Imei", "imei..."}});
 
-    m_callerContainer->registerFunctor("Test2", &HonorCust4Dongle::Test2, this, {});
+    RegisterFunctor("Test2", &HonorCust4Dongle::Test2, this, {});
 
-    m_callerContainer->registerFunctor("TestFreeCaller", test, {});
+    RegisterFunctor("TestFreeCaller", test, {});
     
-    m_callerContainer->registerFunctor("Test", [this](const char* msg) -> bool {
+    RegisterFunctor("Test", [this](const char* msg) -> bool {
         LOG_INFO("running Lamda Test...");
         return true;
     }, {{"Imei", "imei..."}});
 
-    m_callerContainer->registerFunctor("TestLamdaCaller", [this](const char* msg) {
+    RegisterFunctor("TestLamdaCaller", [this](const char* msg) {
+        Sleep(1000);
         LOG_INFO("running  test lamda caller...(msg:{})", msg);
     }, {{"Str", "str..."}});
 
     std::function<void(int)> funcCaller = test_free;
-    m_callerContainer->registerFunctor("TestFunctionalCaller", funcCaller, {{"Number", "num..."}});
+    RegisterFunctor("TestFunctionalCaller", funcCaller, {{"Number", "num..."}});
 
     return true;
 }

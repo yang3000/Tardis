@@ -20,6 +20,7 @@ struct Param
 {
     Str name;
     Str type;
+    Str abbr;
     Str desc;
 };
 
@@ -28,6 +29,24 @@ typedef int           Int;
 typedef char          Char;
 typedef unsigned char UChar;
 typedef char*         PChar;
+
+enum TardisDataType
+{
+    TardisDataType_S8,       // signed char / char (with sensible compilers)
+    TardisDataType_U8,       // unsigned char
+    TardisDataType_S16,      // short
+    TardisDataType_U16,      // unsigned short
+    TardisDataType_S32,      // int
+    TardisDataType_U32,      // unsigned int
+    TardisDataType_S64,      // long long / __int64
+    TardisDataType_U64,      // unsigned long long / unsigned __int64
+    TardisDataType_Float,    // float
+    TardisDataType_Double,   // double
+    TardisDataType_Bool,     // bool
+    TardisDataType_String,   // string
+    TardisDataType_Pointer,  // pointer
+    TardisDataType_COUNT
+};
 
 typedef void (*ParseCallBack)(const char *, Param *, unsigned);
 
@@ -41,59 +60,35 @@ template<typename... Args> struct CheckParam;
 template<typename T, typename... Args> struct CheckParam<T, Args...> { static constexpr bool isValid = ValidType<T>::isValid && CheckParam<Args...>::isValid; };
 template<typename T> struct CheckParam <T> { static constexpr bool isValid = ValidType<T>::isValid; };
 
+// template <typename R, typename... ArgTypes>
+// auto deduce_std_function(R(*)(ArgTypes...))->std::function<R(ArgTypes...)>;
 
-// template <typename R, typename... Args>
-// struct function_traits_helper
-// {
-//     static constexpr auto param_count = sizeof...(Args);
-//     using return_type = R;
-//     template <std::size_t N>
-//     using param_type = std::tuple_element_t<N, std::tuple<Args...>>;
-// };
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...))->std::function<R(ArgTypes...)>;
 
-// template <typename T>
-// struct function_traits;
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...) const)->std::function<R(ArgTypes...)>;
 
-// template <typename ClassType, typename R, typename... Args>
-// struct function_traits<R(ClassType::*)(Args...) const> : public function_traits_helper<R, Args...>
-// {
-//     using class_type = ClassType;
-// };
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...) &)->std::function<R(ArgTypes...)>;
 
-// template <typename T>
-// struct function_traits : public function_traits<decltype(&T::operator())> {};
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&)->std::function<R(ArgTypes...)>;
 
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...) && )->std::function<R(ArgTypes...)>;
 
+// template <typename F, typename R, typename... ArgTypes>
+// auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&&)->std::function<R(ArgTypes...)>;
 
-template <typename R, typename... ArgTypes>
-auto deduce_std_function(R(*)(ArgTypes...))->std::function<R(ArgTypes...)>;
+// template <typename Function>
+// auto deduce_std_function(Function)
+// -> decltype(deduce_std_function_impl(&Function::operator()));
 
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...))->std::function<R(ArgTypes...)>;
+// template <typename Function>
+// using deduce_std_function_t = decltype(deduce_std_function(std::declval<Function>()));
 
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...) const)->std::function<R(ArgTypes...)>;
-
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...) &)->std::function<R(ArgTypes...)>;
-
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&)->std::function<R(ArgTypes...)>;
-
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...) && )->std::function<R(ArgTypes...)>;
-
-template <typename F, typename R, typename... ArgTypes>
-auto deduce_std_function_impl(R(F::*)(ArgTypes...) const&&)->std::function<R(ArgTypes...)>;
-
-template <typename Function>
-auto deduce_std_function(Function)
--> decltype(deduce_std_function_impl(&Function::operator()));
-
-template <typename Function>
-using deduce_std_function_t = decltype(deduce_std_function(std::declval<Function>()));
-
-template <typename F>
-auto to_std_function(F&& fn) -> deduce_std_function_t<F> {
-	return deduce_std_function_t<F>(std::forward<F>(fn));
-}
+// template <typename F>
+// auto to_std_function(F&& fn) -> deduce_std_function_t<F> {
+// 	return deduce_std_function_t<F>(std::forward<F>(fn));
+// }

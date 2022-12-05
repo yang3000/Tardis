@@ -6,6 +6,11 @@
 
 namespace TARDIS::UI
 {
+
+    WidgetContainer::~WidgetContainer()
+    {
+        removeAllWidgets();
+    }
 	void WidgetContainer::removeWidget(AWidget& p_widget)
 	{
 		auto found = std::find_if(m_widgets.begin(), m_widgets.end(), [&p_widget](AWidget*& widget)
@@ -51,6 +56,7 @@ namespace TARDIS::UI
 			bool toDestroy = widget->isDestroyed();
 			if (toDestroy)
 			{
+                printf("collectGarbages\r\n");
 				delete widget;
 			}
 			return toDestroy;

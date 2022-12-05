@@ -1,6 +1,6 @@
 #include "PanelWindow.h"
 
-#include "imgui/imgui.h"
+#include "../imgui/imgui.h"
 
 namespace TARDIS::UI
 {
@@ -16,10 +16,7 @@ namespace TARDIS::UI
 
 	PanelWindow::~PanelWindow()
 	{
-		////delete m_thread_pool;
-		//CORE::EngineManager::Destroy();
-		//CORE::PluginManager::Destroy();
-		//CORE::DynamicModuleManager::destory();
+		printf("destroy PanelWindow\r\n");
 	}
 
 	void PanelWindow::setOpened(bool show)
@@ -28,15 +25,14 @@ namespace TARDIS::UI
 		{
 			m_opened = show;
 
-			// CORE::EventArgs args;
-			// if (m_opened)
-			// {
-			// 	fireEvent(EventOpen, args);
-			// }
-			// else
-			// {
-			// 	fireEvent(EventClose, args);
-			// }
+			if (m_opened)
+			{
+				PanelOpenEvent.invoke();
+			}
+			else
+			{
+				PanelCloseEvent.invoke();
+			}
 		}
 	}
 
@@ -65,17 +61,15 @@ namespace TARDIS::UI
 
 			if (ImGui::Begin((m_name + m_panelID).c_str(), &m_opened, window_flags))
 			{
-				//static float f = 0.0f;
-				//static int counter = 0;
-				//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-
-				//ImGui::SameLine();
-				//ImGui::Text("counter = %d", counter);
-				//ImGui::Text("counter1 = %d", counter);
-				//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				if (!m_opened)
+				{
+					PanelCloseEvent.invoke();
+				}
+				
 
 				drawWidgets();
 			}
+
 			ImGui::End();
 		}
 	}

@@ -70,6 +70,12 @@ namespace TARDIS::CORE
 		// }
 	};
 
+	// auto ConvertToNative(std::string type, std::string value)
+	//  {
+	// 	if(type == "string")
+	// 	ValueHelper<std::string>::fromString(value)
+	//  }
+
 }
 
 template<typename T>

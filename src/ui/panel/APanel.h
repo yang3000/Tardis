@@ -22,6 +22,10 @@ namespace TARDIS::UI
 	public:
 
 		APanel();
+		~APanel()
+		{
+			printf("destroy APanel\r\n");
+		}
 
 		void draw() override;
 

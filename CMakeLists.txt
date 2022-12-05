@@ -24,6 +24,8 @@ include_directories(src/communication)
 #add_subdirectory(demo)
 #add_subdirectory(plugins/write_imei)
 add_subdirectory(src/app)
+add_subdirectory(src/test)
 add_subdirectory(src/communication)
+
 #add_subdirectory(plugins/write_imei)
 add_subdirectory(plugins/honor_cust_lib)

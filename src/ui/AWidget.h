@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+
 #include "IDrawable.h"
+#include "Pluginable.h"
 
 #if defined(_MSC_VER)
 #   pragma warning(push)
@@ -13,7 +15,7 @@ namespace  TARDIS::UI { class WidgetContainer; }
 
 namespace TARDIS::UI
 {
-	class AWidget : public IDrawable
+	class AWidget : public IDrawable, public Pluginable
 	{
 	public:
 		AWidget();

@@ -9,6 +9,14 @@
 #include "Log.h"
 #include "Communication.h"
 
+#define LOG_TRACE(...)       do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Trace,    fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
+#define LOG_INFO(...)        do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Info,     fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
+#define LOG_WARN(...)        do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Warn,     fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
+#define LOG_ERROR(...)       do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Error,    fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
+#define LOG_CRITICAL(...)    do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Critical, fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
+
+#define RegisterFunctor(...) m_callerContainer->registerFunctor(__VA_ARGS__);
+
 namespace TARDIS::CORE
 {
     class Plugin : public IPlugin
@@ -18,7 +26,7 @@ namespace TARDIS::CORE
 
         ~Plugin()
         {
-            printf("plugin[%s] is destroyed.\r\n", m_name.c_str());
+            LOG_INFO("plugin{} is destroyed", m_name);
             delete m_callerContainer;
 
         };
@@ -80,9 +88,3 @@ namespace TARDIS::CORE
         std::string m_name;
     };
 }
-
-#define LOG_TRACE(...)       do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Trace,    fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
-#define LOG_INFO(...)        do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Info,     fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
-#define LOG_WARN(...)        do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Warn,     fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
-#define LOG_ERROR(...)       do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Error,    fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)
-#define LOG_CRITICAL(...)    do { m_logger ? m_logger->log(TARDIS::CORE::LogType::Critical, fmt::format(__VA_ARGS__).c_str()) : void(0); } while (false)

@@ -20,7 +20,13 @@ namespace TARDIS::UI
 
 	Application::~Application()
 	{
-		// panels and windows should be released earlier.
+        if (m_currentWindow)
+        {
+            delete m_currentWindow;
+        }
+        m_currentWindow = nullptr;
+
+        // panels and windows should be released earlier.
 		//PanelsManager::Destroy();
 		//WindowsManager::Destroy();
 	}

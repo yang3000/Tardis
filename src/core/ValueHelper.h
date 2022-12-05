@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <sstream>
 #include <string>
+#include "Base.h"
 
 #if defined(_MSC_VER)
 #	pragma warning(push)
@@ -22,6 +23,9 @@ namespace TARDIS::CORE
 		typedef typename ValueHelper<T>::safe_method_return_type safe_method_return_type;
 		typedef typename ValueHelper<T>::pass_type pass_type;
 		typedef typename ValueHelper<T>::string_return_type string_return_type;
+
+		static const TardisDataType Type = ValueHelper<T>::Type;
+
 
 		static inline const std::string& getDataTypeName()
 		{
@@ -48,6 +52,8 @@ namespace TARDIS::CORE
 		typedef typename ValueHelper<T>::pass_type pass_type;
 		typedef typename ValueHelper<T>::string_return_type string_return_type;
 
+		static const TardisDataType Type = ValueHelper<T>::Type;
+
 		static inline const std::string& getDataTypeName()
 		{
 			return ValueHelper<T>::getDataTypeName();
@@ -72,6 +78,9 @@ namespace TARDIS::CORE
 		typedef typename ValueHelper<T*>::safe_method_return_type safe_method_return_type;
 		typedef typename ValueHelper<T*>::pass_type pass_type;
 		typedef typename ValueHelper<T*>::string_return_type string_return_type;
+
+		static const TardisDataType Type = ValueHelper<T*>::Type;
+
 
 		static inline const std::string& getDataTypeName()
 		{
@@ -99,6 +108,8 @@ namespace TARDIS::CORE
 		typedef const IPlugin* pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_S8;
+
 		static const std::string& getDataTypeName()
 		{
 			static const std::string type("plugin");
@@ -110,6 +121,8 @@ namespace TARDIS::CORE
 	};
 
 
+
+
 	template<>
 	class ValueHelper<char*>
 	{
@@ -118,6 +131,8 @@ namespace TARDIS::CORE
 		typedef std::string safe_method_return_type;
 		typedef const std::string& pass_type;
 		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_String;
 
 		static const std::string& getDataTypeName()
 		{
@@ -145,6 +160,8 @@ namespace TARDIS::CORE
 		typedef const std::string& pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_String;
+
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("string");
@@ -170,6 +187,8 @@ namespace TARDIS::CORE
 		typedef return_type safe_method_return_type;
 		typedef const float pass_type;
 		typedef std::string string_return_type;
+		
+		static const TardisDataType Type = TardisDataType_Float;
 
 		static const std::string& getDataTypeName()
 		{
@@ -201,6 +220,8 @@ namespace TARDIS::CORE
 		typedef const double pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_Double;
+
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("double");
@@ -223,6 +244,70 @@ namespace TARDIS::CORE
 	};
 
 	template<>
+	class ValueHelper<char>
+	{
+	public:
+		typedef char return_type;
+		typedef return_type safe_method_return_type;
+		typedef const char pass_type;
+		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_S8;
+
+		static const std::string& getDataTypeName()
+		{
+			static std::string type("char");
+			return type;
+		}
+
+		static inline return_type fromString(const std::string& str)
+		{
+			char val = 0;
+			sscanf(str.c_str(), "%d", &val);
+			return val;
+		}
+
+		static inline string_return_type toString(pass_type val)
+		{
+			char buff[64];
+			snprintf(buff, sizeof(buff), "%d", val);
+			return std::string(buff);
+		}
+	};
+
+	template<>
+	class ValueHelper<unsigned char>
+	{
+	public:
+		typedef unsigned char return_type;
+		typedef return_type safe_method_return_type;
+		typedef const unsigned char pass_type;
+		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_U8;
+
+		static const std::string& getDataTypeName()
+		{
+			static std::string type("uchar");
+			return type;
+		}
+
+		static return_type fromString(const std::string& str)
+		{
+			unsigned char val = 0;
+			sscanf(str.c_str(), "%u", &val);
+			return val;
+		}
+
+		static string_return_type toString(pass_type val)
+		{
+			char buff[64];
+			snprintf(buff, sizeof(buff), "%u", val);
+			return std::string(buff);
+		}
+	};
+
+	template<>
 	class ValueHelper<int>
 	{
 	public:
@@ -230,6 +315,8 @@ namespace TARDIS::CORE
 		typedef return_type safe_method_return_type;
 		typedef const int pass_type;
 		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_S32;
 
 		static const std::string& getDataTypeName()
 		{
@@ -261,6 +348,8 @@ namespace TARDIS::CORE
 		typedef const unsigned int pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_U32;
+
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("uint");
@@ -291,6 +380,8 @@ namespace TARDIS::CORE
 		typedef const long pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_S64;
+
 		static const std::string& getDataTypeName()
 		{
 			static std::string type("long");
@@ -300,14 +391,14 @@ namespace TARDIS::CORE
 		static inline return_type fromString(const std::string& str)
 		{
 			long val = 0;
-			sscanf(str.c_str(), " %l", &val);
+			sscanf(str.c_str(), "%l", &val);
 			return val;
 		}
 
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%d", val);
+			snprintf(buff, sizeof(buff), "%l", val);
 			return std::string(buff);
 		}
 	};
@@ -320,6 +411,8 @@ namespace TARDIS::CORE
 		typedef return_type safe_method_return_type;
 		typedef const unsigned long pass_type;
 		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_U64;
 
 		static const std::string& getDataTypeName()
 		{
@@ -344,6 +437,38 @@ namespace TARDIS::CORE
 	};
 
 	template<>
+	class ValueHelper<long long>
+	{
+	public:
+		typedef long long return_type;
+		typedef return_type safe_method_return_type;
+		typedef const long long pass_type;
+		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_S64;
+
+		static const std::string& getDataTypeName()
+		{
+			static std::string type("llong");
+			return type;
+		}
+
+		static inline return_type fromString(const std::string& str)
+		{
+			long long val = 0;
+			sscanf(str.c_str(), "%I64", &val);
+			return val;
+		}
+
+		static inline string_return_type toString(pass_type val)
+		{
+			char buff[64];
+			snprintf(buff, sizeof(buff), "%I64", val);
+			return std::string(buff);
+		}
+	};
+
+	template<>
 	class ValueHelper<unsigned long long>
 	{
 	public:
@@ -352,9 +477,11 @@ namespace TARDIS::CORE
 		typedef const unsigned long long pass_type;
 		typedef std::string string_return_type;
 
+		static const TardisDataType Type = TardisDataType_U64;
+
 		static const std::string& getDataTypeName()
 		{
-			static std::string type("ulonglong");
+			static std::string type("ullong");
 			return type;
 		}
 
@@ -381,6 +508,8 @@ namespace TARDIS::CORE
 		typedef return_type safe_method_return_type;
 		typedef const bool pass_type;
 		typedef const std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_Bool;
 
 		static const std::string& getDataTypeName()
 		{

@@ -100,16 +100,19 @@ namespace TARDIS::CORE
             //return (auto it = m_output.find(k)) != m_output.cend() ? it->second : "";
             } 
 		
-		//const auto& getParams() const { return m_params; }
+		auto& getParams() { return m_params; }
 		
 
 	private:
+		static uint64_t ID_INCREMENT;
         //ICaller *m_caller;
 
         unsigned m_times;
 		bool     m_skip;
 		bool     m_paused;
 		bool     m_lock;   
+
+        bool     m_isActived;
 
 		std::string  m_name;
 		std::string  m_id;

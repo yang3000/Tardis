@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Window.h"
-//#include "Canvas.h"
+#include "Canvas.h"
+#include "PanelsManager.h"
 
 //#include "MenuBar.h"
 
@@ -15,7 +16,7 @@ namespace TARDIS::UI
 
 		void setup();
 
-		void updateImpl() override;
+		//void update();
 
 		void handleCloseEvent();
 
@@ -27,5 +28,8 @@ namespace TARDIS::UI
 		void setupMenuBar();
 
 		bool show_demo = false;
+    
+    private:
+
 	};
 }

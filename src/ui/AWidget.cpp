@@ -47,8 +47,8 @@ namespace TARDIS::UI
 		{
 			drawImpl();
 
-			// if (m_autoExecutePlugins)
-			// 	executePlugins();
+			if (m_autoExecutePlugins)
+				executePlugins();
 
 			if (!lineBreak)
 				ImGui::SameLine();

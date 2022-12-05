@@ -3,6 +3,7 @@
 #include <memory>
 #include "panel/APanel.h"
 #include "Canvas.h"
+#include "PanelsManager.h"
 
 
 namespace TARDIS::UI
@@ -10,27 +11,22 @@ namespace TARDIS::UI
 	class Window
 	{
 	public:
-        Window()
-        {
-            m_canvas = std::make_unique<Canvas>();
-        };
+        Window() : m_panelsManager(m_canvas)
+        { };
 
         virtual ~Window() {}
 
 		void update()
 		{
-			updateImpl();
-			m_canvas->draw();
-		}
-
-		void addPanel(APanel& p_panel)
-		{
-			m_canvas->addPanel(p_panel);
+			// updateImpl();
+			m_canvas.draw();
 		}
 
 	private:
-		virtual void updateImpl() = 0;
+		//virtual void updateImpl() = 0;
+        Canvas        m_canvas;
 
-		std::unique_ptr<Canvas> m_canvas;
+    protected:
+        PanelsManager m_panelsManager;
 	};
 }

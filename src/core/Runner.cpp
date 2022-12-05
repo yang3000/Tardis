@@ -9,8 +9,11 @@
 namespace TARDIS::CORE
 {
 
+    uint64_t Runner::ID_INCREMENT = 0;
+
 	Runner::Runner(const std::string& name, bool lock, bool skip, bool pause, bool times) :
 		m_name(name),
+        m_id("##" + std::to_string(++ID_INCREMENT)),
 		m_lock(lock),
 		m_skip(skip),
 		m_paused(pause),
@@ -19,6 +22,7 @@ namespace TARDIS::CORE
 
 	Runner::Runner() :
 		m_name(""),
+        m_id("##" + std::to_string(++ID_INCREMENT)),
 		m_lock(false),
 		m_skip(false),
 		m_paused(false),

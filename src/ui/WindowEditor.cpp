@@ -9,11 +9,14 @@
 //#include "PanelWindow.h"
 #include "panel/PanelMenuBar.h"
 #include "panel/PanelSequenceEditor.h"
+#include "panel/PanelProperties.h"
+#include "PanelsManager.h"
 //#include "SequenceEditView.h"
 //#include "ModulesView.h"
 //#include "BurnInView.h"
 //#include "TestView.h"
 #include "IconsFontAwesome5.h"
+#include "Runner.h"
 //#include "EngineManager.h"
 //#include "PluginManager.h"
 //#include "RapidJsonParser.h"
@@ -41,11 +44,28 @@ namespace TARDIS::UI
 		//UI::PanelWindow& panelWindow = UI::PanelsManager::CreatePanel<UI::PanelWindow>("hhh");
 		//panelWindow.subscribeEvent()
 		//addPanel(UI::PanelsManager::CreatePanel<UI::PanelWindow>("MyFirstPanel"));
-        static PanelMenuBar panelMenuBar;
-        static PanelSequenceEditor panelSequenceEditor;
-		addPanel(panelMenuBar);
-		addPanel(panelSequenceEditor);
+        //static PanelsManager panelsManager;
+        //static PanelMenuBar panelMenuBar;
+        //static PanelSequenceEditor panelSequenceEditor;
+        //static PanelProperties panelProperties;
+		//addPanel(panelMenuBar);
+		//addPanel(panelSequenceEditor);
+		//addPanel(panelProperties);
+        //panelsManager.CreatePanel
+        // panelSequenceEditor.RunnerSelectedEvent.addListener([](std::weak_ptr<CORE::Runner> runner){
+        //     printf(runner.lock()->getName().c_str());
+        //     panelProperties.onSelectedRunner(runner);
+        // });
+        m_panelsManager.createPanel<PanelMenuBar>("PanelMenuBar");
+        m_panelsManager.createPanel<PanelSequenceEditor>("PanelSequenceEditor");
+        m_panelsManager.createPanel<PanelProperties>("PanelProperties");
 
+        m_panelsManager.getPanelAs<PanelSequenceEditor>("PanelSequenceEditor").RunnerSelectedEvent.addListener([this](std::weak_ptr<CORE::Runner> runner){
+            printf(runner.lock()->getName().c_str());
+            printf("\r\n");
+            m_panelsManager.getPanelAs<PanelProperties>("PanelProperties").onSelectedRunner(runner);
+            //panelProperties.onSelectedRunner(runner);
+        });
 		// static std::shared_ptr<CORE::RapidJsonParser> parser = std::make_shared<CORE::RapidJsonParser>();
 		// parser->parseJsonFile("C:\\Users\\yangh\\Desktop\\Tardis\\bin\\Debug\\sequence.json");
 
@@ -239,23 +259,10 @@ namespace TARDIS::UI
 		
 	}
 
-	void WindowEditor::updateImpl()
-	{
-		//UI::PanelWindow& burnInView = UI::PanelsManager::GetPanelAs<UI::PanelWindow>("BurnInView");
-		//show_demo = burnInView.isOpened();
-
-		//burnInView.setOpened(show_demo);
-	/*	if (show_demo)
-		{
-			UI::PanelWindow& aa = UI::PanelsManager::GetPanelAs<UI::PanelWindow>("BurnInView");
-			aa.setOpened(show_demo);
-		}*/
-		// setDockSpaceBegin();
-
-		// setupMenuBar();
-
-		// setDockSpaceEnd();
-	}
+	// void WindowEditor::update()
+	// {
+    //     m_canvas->draw();
+	// }
 
 	void WindowEditor::handleCloseEvent()
 	{

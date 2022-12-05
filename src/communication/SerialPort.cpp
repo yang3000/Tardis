@@ -12,13 +12,13 @@ namespace TARDIS
 
     bool SerialPort::loadCallers()
     {
-        m_callerContainer->registerFunctor("sendCommand", &SerialPort::sendCommand, this, 
+        RegisterFunctor("sendCommand", &SerialPort::sendCommand, this, 
         {
             {"Command", "command"}, 
 			{"Length", "length"}
         });
 
-        m_callerContainer->registerFunctor("readCommand", [this](std::string regex) -> bool 
+        RegisterFunctor("readCommand", [this](std::string regex) -> bool 
         {
             char buf[1024] = {0};
             int len = sizeof(buf);
@@ -30,7 +30,7 @@ namespace TARDIS
             {"Regex", "command"}
         });
 
-        // m_callerContainer->registerFunctor("queryCommand", &SerialPort::queryCommand, this, 
+        // RegisterFunctor"queryCommand", &SerialPort::queryCommand, this, 
         // {
         //     {"Command", "command"}, 
 		// 	{"Length", "length"}

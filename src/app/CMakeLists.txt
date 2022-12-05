@@ -1,6 +1,5 @@
 set( CORE_SOURCE_FILES
-    #Application.cpp
-    Test.cpp
+    Application.cpp
     ../core/SpdLog.cpp 
     ../core/DynamicModule.cpp 
     ../core/RapidJsonParser.cpp 
@@ -17,13 +16,23 @@ set( CORE_SOURCE_FILES
     ../ui/DirectX12Device.cpp
     ../ui/WindowEditor.cpp
     ../ui/Canvas.cpp
+    ../ui/PanelsManager.cpp
     ../ui/panel/APanel.cpp
+
     ../ui/AWidget.cpp
+    ../ui/WidgetContainer.cpp
+
+    ../ui/layout/Collapsing.cpp
+    ../ui/widgets/WidgetRunnerProperty.cpp
+    ../ui/widgets/InputText.cpp
+    ../ui/widgets/DragSingleScalar.cpp
+    ../ui/panel/PanelWindow.cpp
     ../ui/panel/PanelMenuBar.cpp
     ../ui/panel/PanelSequenceEditor.cpp
+    ../ui/panel/PanelProperties.cpp
 )
 #add_executable(main main.cpp  ${CORE_SOURCE_FILES})
-#add_executable(tardis Tardis.cpp  ${CORE_SOURCE_FILES})
-add_executable(tardis Test.cpp  ${CORE_SOURCE_FILES})
+add_executable(tardis Tardis.cpp  ${CORE_SOURCE_FILES})
+# add_executable(tardis Test.cpp  ${CORE_SOURCE_FILES})
 
 target_link_libraries(tardis DbgHelp.lib d3d12.lib d3dcompiler.lib dxgi.lib)

@@ -17,14 +17,20 @@ namespace TARDIS::CORE
 {
 	struct ParamInfo
 	{
-		ParamInfo(const std::string& name = "", const std::string& desc = "", const std::string& type = "") : 
+		ParamInfo(
+			const std::string& name = "", 
+			const std::string& desc = "", 
+			const std::string& type = "", 
+			const std::string& abbr = "") : 
 		m_name(name),
 		m_type(type),
+		m_abbr(abbr),
 		m_desc(desc)
 		{}
 
 		std::string m_name;
 		std::string m_type;
+		std::string m_abbr;
 		std::string m_desc;
 	};
 
@@ -73,6 +79,7 @@ namespace TARDIS::CORE
 			m_desData[I].m_name = m_srcData[I].m_name;
 			m_desData[I].m_desc = m_srcData[I].m_desc;
 			m_desData[I].m_type = ValueHelper<T>::getDataTypeName();
+			m_desData[I].m_abbr = ValueHelper<char>::toString(ValueHelper<T>::Type);
 			return true;
 		}
 
