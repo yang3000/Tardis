@@ -53,7 +53,7 @@ int main()
         TDS_LOG_INFO("Method:{}", name);
         for (int i = 0; i < count; ++i)
         {
-            TDS_LOG_INFO("Param{}:{}[{}({})]:{}", i, params[i].name.buf, params[i].type.buf, params[i].abbr.buf, params[i].desc.buf);
+            TDS_LOG_INFO("Param{}:{}[{}({})]:{}", i, params[i].name.buf, params[i].type.buf, params[i].typeId.buf, params[i].desc.buf);
         }
         TDS_LOG_INFO("--------------------------------");
     });

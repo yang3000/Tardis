@@ -33,19 +33,25 @@ namespace TARDIS::CORE
 		struct Param
 		{
             Param(const std::string &name,
-                  const std::string &type,
                   const std::string &value,
-                  const std::string &get) : 
-                  m_name(name),
-                  m_type(type),
-                  m_value(value),
-                  m_get(get)
+                  const std::string &get,
+                  const std::string &desc,
+                  const std::string &type,
+                  UInt              typeId) 
+                : m_name(name)
+                , m_value(value)
+                , m_get(get)
+                , m_desc(desc)
+                , m_type(type)
+                , m_typeId(typeId)
             {}
 
 			std::string m_name;
-            std::string m_type;
             std::string m_value;
             std::string m_get;
+            std::string m_desc;
+            std::string m_type;
+            UInt        m_typeId;
 		};
 
 		//static std::shared_ptr<Runner> CreateRunner

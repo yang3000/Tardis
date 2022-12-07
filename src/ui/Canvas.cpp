@@ -6,13 +6,12 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_dx12.h"
 
-
 namespace TARDIS::UI
 {
-	void Canvas::draw()
-	{
-		//if (!m_panels.empty())
-		{
+    void Canvas::draw()
+    {
+        // if (!m_panels.empty())
+        {
             // Start the Dear ImGui frame
             ImGui_ImplDX12_NewFrame();
             ImGui_ImplWin32_NewFrame();
@@ -31,7 +30,7 @@ namespace TARDIS::UI
                 ImGui::SetNextWindowViewport(viewport->ID);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f,32.0f));
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 32.0f));
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
                 window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -77,10 +76,10 @@ namespace TARDIS::UI
 
                     ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
 
-                    ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
+                    ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
 
-                    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);             // Edit 1 float using a slider from 0.0f to 1.0f
-                    if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+                    ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+                    if (ImGui::Button("Button"))                 // Buttons return true when clicked (most widgets return true when edited/activated)
                         counter++;
                     ImGui::SameLine();
                     ImGui::Text("counter = %d", counter);
@@ -88,40 +87,38 @@ namespace TARDIS::UI
                     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
                     ImGui::End();
                 }
-                
+
                 ImGui::End();
             }
 
-			ImGui::Render();
-		}
-	}
+            ImGui::Render();
+        }
+    }
 
-	void Canvas::addPanel(APanel& p_panel)
-	{
-		m_panels.push_back(std::ref(p_panel));
-	}
+    void Canvas::addPanel(APanel &p_panel)
+    {
+        m_panels.push_back(std::ref(p_panel));
+    }
 
-	void Canvas::removePanel(APanel& p_panel)
-	{
-		m_panels.erase(std::remove_if(m_panels.begin(), m_panels.end(), [&p_panel](std::reference_wrapper<APanel>& p_item)
-		{
-			return &p_panel == &p_item.get();
-		}));
-	}
+    void Canvas::removePanel(APanel &p_panel)
+    {
+        m_panels.erase(std::remove_if(m_panels.begin(), m_panels.end(), [&p_panel](std::reference_wrapper<APanel> &p_item)
+                                      { return &p_panel == &p_item.get(); }));
+    }
 
-	void Canvas::removeAllPanels()
-	{
-		m_panels.clear();
-	}
+    void Canvas::removeAllPanels()
+    {
+        m_panels.clear();
+    }
 
-	void Canvas::makeDockspace(bool p_state)
-	{
-		m_isDockspace = p_state;
-	}
+    void Canvas::makeDockspace(bool p_state)
+    {
+        m_isDockspace = p_state;
+    }
 
-	bool Canvas::isDockspace() const
-	{
-		return m_isDockspace;
-	}
+    bool Canvas::isDockspace() const
+    {
+        return m_isDockspace;
+    }
 
 }

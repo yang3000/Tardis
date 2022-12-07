@@ -14,7 +14,7 @@ namespace TARDIS::UI
 		//static const std::string EventContentChanged;
 		//static const std::string EventEnterPressed;
 
-		InputText(const std::string& label, const std::string& content);
+		InputText(const std::string& label, const std::string& content, bool isSameline = false);
 
 		const std::string GetLabel() const { return m_label; };
 		const std::string GetContent() const { return m_content; };
@@ -30,5 +30,6 @@ namespace TARDIS::UI
 	private:
 		std::string m_label;
 		std::string m_content;
+        bool m_sameline;
 	};
 }

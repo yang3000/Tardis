@@ -15,13 +15,11 @@ namespace TARDIS::UI
         ImGui::ColorButton(id, color, ImGuiColorEditFlags_NoTooltip);
         if (running)
         {
-            // ImRect r = g.LastItemData.Rect;
             ImVec2 center = g.LastItemData.Rect.GetCenter();
             float radius = ImFloor(ImMin(g.LastItemData.Rect.GetWidth(), g.LastItemData.Rect.GetHeight()) * 0.40f);
             float t = (float)(ImGui::GetTime() * 10.0f);
             ImVec2 off(ImCos(t) * radius, ImSin(t) * radius);
             ImGui::GetWindowDrawList()->AddLine(center - off, center + off, ImGui::GetColorU32(ImGuiCol_Text), 1.5f);
-            // ImGui::RenderText(r.Min + style.FramePadding + ImVec2(0, 0), &"|\0/\0-\0\\"[(((ImGui::GetFrameCount() / 5) & 3) << 1)], NULL);
         }
     }
 
@@ -47,6 +45,15 @@ namespace TARDIS::UI
         if(ImGui::Button("Run"))
         {
             //RunnerSelectedEvent.invoke()
+            CORE::Engine::runnerList.pop_back();
+        }
+
+        if(ImGui::Button("Delete"))
+        {
+            if(CORE::Engine::runnerList.size() > 0 )
+            {
+                CORE::Engine::runnerList.pop_back();
+            }
         }
 
         

@@ -25,6 +25,7 @@ set( CORE_SOURCE_FILES
     ../ui/layout/Collapsing.cpp
     ../ui/widgets/WidgetRunnerProperty.cpp
     ../ui/widgets/InputText.cpp
+    ../ui/widgets/HelperMarker.cpp
     ../ui/widgets/DragSingleScalar.cpp
     ../ui/panel/PanelWindow.cpp
     ../ui/panel/PanelMenuBar.cpp

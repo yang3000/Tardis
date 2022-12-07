@@ -4,7 +4,6 @@
 
 namespace TARDIS::CORE
 {
-
     class ICaller
     {
     public:

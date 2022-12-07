@@ -149,12 +149,14 @@ namespace TARDIS::CORE
                     for (int i = 0; i < json_node->size(); i++)
                     {
                         json_node->nodeBegin(std::to_string(i));
-
                         m_params.emplace_back(std::make_shared<Param>(
                             json_node->get<std::string>("param"),
-                            json_node->get<std::string>("type"),
                             json_node->get<std::string>("value"),
-                            json_node->get<std::string>("get")));
+                            json_node->get<std::string>("get"),
+                            json_node->get<std::string>("desc"),
+                            json_node->get<std::string>("type"),
+                            ValueHelper<UInt>::fromString(json_node->get<std::string>("type_id"))
+                            ));
                         json_node->nodeEnd();
                     }
                 }

@@ -19,9 +19,9 @@ struct Str
 struct Param
 {
     Str name;
-    Str type;
-    Str abbr;
     Str desc;
+    Str type;
+    Str typeId;
 };
 
 typedef unsigned int  UInt;

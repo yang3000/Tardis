@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "PanelWindow.h"
+#include "../layout/Collapsing.h"
 
 namespace TARDIS::CORE
 {

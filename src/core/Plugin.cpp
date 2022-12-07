@@ -4,11 +4,11 @@
 namespace TARDIS::CORE
 {
     Plugin::Plugin(std::string name) :
-        m_name(std::move(name)),
-        m_self(this),
+        m_logger(nullptr),
         m_callerContainer(new CallerContainer()),
-        m_pFn(nullptr)
-
+        m_self(this),
+        m_pFn(nullptr),
+        m_name(std::move(name))
     {};
 
     void Plugin::parseCallerInfo(ParseCallBack cb)
