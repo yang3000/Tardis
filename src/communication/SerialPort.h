@@ -5,7 +5,7 @@
 
 namespace TARDIS
 {
-    class SerialPort : public CORE::Plugin, public Communication
+    class SerialPort : public CORE::Plugin<SerialPort>, public Communication
     {
     public:
     	SerialPort(std::string name);

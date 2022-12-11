@@ -19,67 +19,65 @@
 
 namespace TARDIS::CORE
 {
+    template<typename T>
     class Plugin : public IPlugin
     {
     public:
         Plugin(std::string name);
 
-        ~Plugin()
-        {
-            LOG_INFO("plugin{} is destroyed", m_name);
-            delete m_callerContainer;
+        ~Plugin();
 
-        };
-
-        template <typename T>
-        static T *CreateInstance(const std::string& name) { return new T(name); }
-    
-        template <typename... Args>
-        void registerFunctor(const char* name, const std::vector<ParamInfo>& paramData, Args&&... args)
-        {
-            m_callerContainer->registerFunctor(name, std::forward<Args>(args)..., paramData);
-        }
-
-        ICaller* getCaller(const char* fnName) { return m_callerContainer->get(fnName)->caller; }
-
-        virtual void parseCallerInfo(ParseCallBack cb) override;
-
-        void setCallback(VCallBack* cb) { assert(cb); m_pFn = cb; }
-
-        void setLogger(Log *logger) { m_logger = logger; }
-
-        bool loadCallers() { return true; }
-
-        const char *getName() { return m_name.c_str(); }
-
-        void destroy() { delete m_self; }
-
-        void addPoolData(const char* key, const char* value) 
+        static T *CreateInstance(const std::string& name) 
         { 
-            assert(m_pFn); 
-            m_pFn->addPoolData(key, value);
+            //static_assert(std::is_base_of<Plugin, T>::value, "T should derive from Plugin");
+            return new T(name); 
         }
 
-        void addOutput(const char *key, const char *value)
+        void setLogger(Log *logger) override;
+
+        bool loadCallers() override;
+
+        ICaller* getCaller(const char* fnName) override;
+
+        void parseCallerInfo(ParseCallBack cb) override;
+
+        void setCallback(VCallBack* cb) override;
+
+        const char *getName() override;
+
+        IPlugin* clone() override;
+
+        void destroy() override;
+
+
+        void addPoolData(const char* key, const char* value);
+
+        void addOutput(const char *key, const char *value);
+
+        void showTestItem(const char* name, bool res, const char* value, const char* lower, const char* upper, const char* desc);
+
+        void showTestItem(const char* name, bool res = true, const char* desc = nullptr);
+
+        template<typename DataType>
+        void showTestItem(const char* name, DataType value, decltype(value) lower, decltype(value) upper, const char* desc = nullptr)
         {
-            assert(m_pFn);
-            m_pFn->addOutput(key, value);
+            bool res = (value < lower || value >  upper);
+            showTestItem(
+                name, 
+                !res, 
+                ValueHelper<DataType>::toString(value).c_str(), 
+                ValueHelper<DataType>::toString(lower).c_str(), 
+                ValueHelper<DataType>::toString(upper).c_str(), 
+                desc
+            );
         }
 
-        Communication* getCommunication(const char *moduleId)
-        {
-            assert(m_pFn);
-            Communication* pCommu = m_pFn->getCommunication(moduleId);
-            if(!pCommu)
-            {
-                //throw 
-            }
-            return pCommu;
-        }
+        Communication* getCommunication(uint64_t moduleId);
 
     protected:
         Log *m_logger;
         CallerContainer *m_callerContainer;
+
     private:
         IPlugin *m_self;
 
@@ -88,3 +86,5 @@ namespace TARDIS::CORE
         std::string m_name;
     };
 }
+
+#include "Plugin.inl"

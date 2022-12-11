@@ -3,6 +3,7 @@
 #include <functional>
 #include <utility> 
 #include <type_traits>
+#include <assert.h>
 
 #   ifndef TARDIS_EXPORTS
 #       define TARDIS_EXPORT __declspec(dllexport)
@@ -10,25 +11,75 @@
 #       define TARDIS_EXPORT __declspec(dllimport)
 #   endif
 
+typedef unsigned int  UInt;
+typedef int           Int;
+
+typedef char          Char;
+typedef unsigned char UChar;
+typedef char*         PChar;
+typedef const char*   CChar;
+
+typedef bool          Bool;
+
 struct Str
 {
-    const char* buf;
-    unsigned len;
+    CChar buf;
+    UInt  len;
 };
 
 struct Param
 {
     Str name;
-    Str desc;
     Str type;
     Str typeId;
+    Str desc;
 };
 
-typedef unsigned int  UInt;
-typedef int           Int;
-typedef char          Char;
-typedef unsigned char UChar;
-typedef char*         PChar;
+typedef void (*ParseCallBack)(const char *, Param *, unsigned);
+
+struct AssignParam
+{
+    AssignParam(int count) 
+        : args(nullptr)
+        , n(count) 
+    {
+        if (n > 0)
+        {
+            args = new (std::nothrow) Str[n];
+            if (!args)
+            {
+                // Todo
+            }
+        }
+    }
+
+    ~AssignParam() 
+    { 
+        if(args)
+        {
+            delete[] args; 
+        }
+        args = nullptr;
+    }
+
+    void push(CChar v, UInt l)
+    {
+        assert(idx < n);
+        args[idx].buf = v;
+        args[idx].len = l;
+        ++idx;
+    }
+
+    void push(Str str)
+    {
+        push(str.buf, str.len);
+    }
+
+    Str* args;
+    int n = 0;
+    int idx = 0;
+};
+
 
 enum TardisDataType
 {
@@ -45,10 +96,9 @@ enum TardisDataType
     TardisDataType_Bool,     // bool
     TardisDataType_String,   // string
     TardisDataType_Pointer,  // pointer
+    TardisDataType_Communication,  // serial port / adb / socket / gpib / bluetooth ...
     TardisDataType_COUNT
 };
-
-typedef void (*ParseCallBack)(const char *, Param *, unsigned);
 
 // transform from GenSeq<N> to Seq<0,1,2,3,...,N-1>
 template<int...> struct Seq {};

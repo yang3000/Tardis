@@ -7,6 +7,7 @@ set( CORE_SOURCE_FILES
     ../core/RawDataContainer.cpp
     ../core/Runner.cpp
     ../core/Engine.cpp
+    ../core/PluginManager.cpp
     ../ui/imgui/imgui.cpp
     ../ui/imgui/imgui_widgets.cpp
     ../ui/imgui/imgui_tables.cpp

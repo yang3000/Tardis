@@ -6,6 +6,7 @@
 #include "JsonHandler.h"
 #include "RapidJsonParser.h"
 #include "Communication.h"
+#include "PluginManager.h"
 
 #include "Engine.h"
 
@@ -38,13 +39,16 @@ int main()
     auto pCallback1 = std::make_shared<CallBackImpl>(&engine1);
     auto pCallback2 = std::make_shared<CallBackImpl>(&engine2);
 
-    TARDIS::DynamicModule* p_dyModule = new TARDIS::DynamicModule("honor_cust_lib.dll");
-    auto pPlugin1 = p_dyModule->Call<CreatePlugin>("CreatePlugin");
+    PluginManager::LoadPlugin("honor_cust_lib","honor_cust_lib.dll");
+
+    //TARDIS::DynamicModule* p_dyModule = new TARDIS::DynamicModule("honor_cust_lib.dll");
+    auto pPlugin1 = PluginManager::CreatePlugin(1);
+    //auto pPlugin1 = p_dyModule->Call<CreatePlugin>("CreatePlugin");
     pPlugin1->setLogger(log1);
     pPlugin1->loadCallers();
     pPlugin1->setCallback(pCallback1.get());
 
-    auto pPlugin2 = p_dyModule->Call<CreatePlugin>("CreatePlugin");
+    auto pPlugin2 = PluginManager::CreatePlugin(1);//pPlugin1->clone(); //p_dyModule->Call<CreatePlugin>("CreatePlugin");
     pPlugin2->setLogger(log2);
     pPlugin2->loadCallers();
     pPlugin2->setCallback(pCallback2.get());
@@ -124,6 +128,7 @@ int main()
     // TDS_LOG_INFO("--------------------------------");
     pCallback1.reset();
     pCallback2.reset();
+    PluginManager::DestroyAllPlugins();
     //delete p_dyModule;
     //delete p_SerialPortDyModule;
 

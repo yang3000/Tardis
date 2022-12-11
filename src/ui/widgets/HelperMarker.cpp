@@ -4,8 +4,9 @@
 
 namespace TARDIS::UI
 {
-    HelperMarker::HelperMarker(std::string marker)
+    HelperMarker::HelperMarker(std::string marker, bool isSameline)
         : m_marker(marker)
+        , m_sameline(isSameline)
     {};
 
     void HelperMarker::drawImpl()
@@ -18,6 +19,10 @@ namespace TARDIS::UI
             ImGui::TextUnformatted(m_marker.c_str());
             ImGui::PopTextWrapPos();
             ImGui::EndTooltip();
+        }
+        if (m_sameline)
+        {
+            ImGui::SameLine();
         }
     }
 }

@@ -13,11 +13,11 @@ namespace TARDIS
 	class DynamicModule
 	{
 	public:
-		DynamicModule(const std::string& name);
+		DynamicModule(const std::string& path);
 
 		~DynamicModule();
 
-		const std::string& getModuleName() const;
+		const std::string& getModulePath() const;
 
 		template <typename Fn, typename... Args>
 		inline auto Call(const char* fnName, Args&&... args) -> typename std::result_of<Fn(Args...)>::type
@@ -26,11 +26,10 @@ namespace TARDIS
 			assert(fn);
 			return fn(std::forward<Args>(args)...);
 		}
-
 	
 		void* getSymbolAddress(const std::string& symbol) const;
 	private:
 		struct Impl;
-		Impl* d_pimpl;
+		Impl* m_pimpl;
 	};
 }

@@ -1,12 +1,13 @@
 # 设置变量
 SET(HONOR_CUST_LIB_SRC 
 ./HonorCust4Dongle.h 
-./HonorCust4Dongle.cpp 
-../../src/core/Plugin.cpp 
+./HonorCust4Dongle.cpp
 ../../src/core/CallerContainer.cpp 
 ../../src/core/DynamicModule.cpp)
 
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
+# SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/test)
+
 
 # 第一个参数为你需要构建的dll的名字，第二个为类型
 add_library(honor_cust_lib SHARED ${HONOR_CUST_LIB_SRC})

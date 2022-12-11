@@ -153,8 +153,9 @@ namespace TARDIS::CORE
 
     private:
         void addFunctor(const std::string &fnName, CallerInfo *fnData);
-
+        template<typename T>
         friend class Plugin;
+        
         std::unordered_map<std::string, CallerInfo *> m_slots;
     };
 }

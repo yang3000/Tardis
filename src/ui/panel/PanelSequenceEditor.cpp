@@ -3,9 +3,13 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
+#include "IconsFontAwesome5.h"
 
 #include "Engine.h"
 #include "RapidJsonParser.h"
+#include "Engine.h"
+#include "PluginManager.h"
+#include "SpdLog.h"
 
 namespace TARDIS::UI
 {
@@ -25,17 +29,35 @@ namespace TARDIS::UI
 
     PanelSequenceEditor::PanelSequenceEditor()
     {
+        CORE::SpdLog::DefaultLogger();
+
+        m_engine     = std::make_shared<CORE::Engine>("testEngine");
+        m_plugin_cb  = std::make_shared<CORE::CallBackImpl>(m_engine);
+        m_plugin_cb->addPoolData("imei", "yansahjhsdafsd");
+        m_plugin_log = std::make_shared<CORE::SpdLog>(m_engine->getEngineId(), "tardis_thread1.log");
+
         auto jsonParser = std::make_shared<CORE::RapidJsonParser>();
         jsonParser->parseJsonFile("sequence.json");
-
         TDS_LOG_INFO(jsonParser->get("version"));
 
-        if (jsonParser->nodeBegin("sequences"))
+        CORE::PluginManager::LoadPluginEvent.addListener([this](uint64_t pluginId)
         {
-            CORE::Engine::OnDeserialize(jsonParser);
-            jsonParser->nodeEnd();
-        }
+            auto plugin = m_engine->addPlugin(pluginId);
+            if(plugin)
+            {
+                plugin->setCallback(m_plugin_cb.get());     
+                plugin->setLogger(m_plugin_log.get());   
+                plugin->loadCallers();
+            }
+        });
 
+        CORE::PluginManager::OnDeserialize(jsonParser);
+        CORE::Engine::OnDeserialize(jsonParser);
+    }
+
+    PanelSequenceEditor::~PanelSequenceEditor()
+    {
+        CORE::PluginManager::DestroyAllPlugins();
     }
 
     void PanelSequenceEditor::drawImpl()
@@ -44,8 +66,9 @@ namespace TARDIS::UI
 
         if(ImGui::Button("Run"))
         {
+            m_engine->runTask();
             //RunnerSelectedEvent.invoke()
-            CORE::Engine::runnerList.pop_back();
+           // CORE::Engine::runnerList.pop_back();
         }
 
         if(ImGui::Button("Delete"))
@@ -70,7 +93,7 @@ namespace TARDIS::UI
             // ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(100, 10) * dpi_scale);
             static int seleted_col = -1;
             
-            auto runnerList = CORE::Engine::runnerList;
+            auto& runnerList = CORE::Engine::runnerList;
             for (int test_n = 0; test_n < runnerList.size(); test_n++)
             {
                 ImGui::TableNextRow();
@@ -83,8 +106,14 @@ namespace TARDIS::UI
 
                 ImGui::TableNextColumn();
                 TestStatusButton("status", status_color, true);
+                
                 ImGui::SameLine();
-
+                if(ImGui::SmallButton(ICON_FA_PLAY))
+                {
+                    TDS_LOG_INFO("runner{} is clicked.", test_n);
+                    std::thread thread([this](int idx){ CORE::Engine::runnerList[idx]->exec(m_engine.get()); }, test_n);
+		            thread.detach();
+                }
                 bool queue_test = false;
                 bool queue_gui_func_toggle = false;
                 bool select_test = false;

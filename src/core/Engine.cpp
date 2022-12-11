@@ -7,7 +7,7 @@
 //#include "RunnerArgs.h"
 //#include "Node.h"
 
-//#include "PluginManager.h"
+#include "PluginManager.h"
 
 //#include "CommunicationManager.h"
 //#include "Printer.h"
@@ -100,7 +100,7 @@ namespace TARDIS::CORE
 			// }
 
 			// call it.
-			bool res = m_curRunner->exec(this);
+			bool res = runnerList[i]->exec(this);
 			if (!res) {
 				// RunnerEventArgs event_error(m_curRunner, std::string("execute node[") + m_curRunner->m_name + "] fail");
 				// fireEvent(EventRunnerError, event_error);
@@ -123,17 +123,25 @@ namespace TARDIS::CORE
         str.buf = nullptr;
         str.len = 0;
         auto it = m_poolData.find(key);
-        if (it != m_poolData.cend())
+        if (it == m_poolData.cend())
         {
-            str.buf = it->second.c_str();
-            str.len = it->second.size();
+			TDS_LOG_WARN("can not find data from pool by key[{}]", key);
+        	return str;
         }
+		str.buf = it->second.c_str();
+        str.len = it->second.size();
         return str;
     }
 
-    void Engine::addPlugin(const std::string &moduleId, IPlugin* plugin)
+    IPlugin* Engine::addPlugin(uint64_t moduleId)
     {
-        m_plugins.emplace(moduleId, plugin);
+		if(!m_plugins.count(moduleId))
+		{
+			auto plugin = PluginManager::CreatePlugin(moduleId);
+			m_plugins.emplace(moduleId, plugin);
+			return plugin;
+		}
+		return nullptr;
     }
 
     void Engine::loadPlugins()
@@ -141,7 +149,7 @@ namespace TARDIS::CORE
 
     }
     
-    IPlugin* Engine::getPlugin(const std::string &moduleId)
+    IPlugin* Engine::getPlugin(uint64_t moduleId)
 	{
 		auto it = m_plugins.find(moduleId);
 		if(it != m_plugins.end())

@@ -12,7 +12,7 @@ namespace TARDIS::UI
 	class DragSingleScalar : public DataWidget<std::string>
 	{
 	public:
-		DragSingleScalar(const std::string& label, const std::string& content, ImGuiDataType dataType, float speed = 1.0f);
+		DragSingleScalar(const std::string& label, const std::string& content, ImGuiDataType dataType, float speed = 0.0f);
 
 
 	protected:
@@ -24,10 +24,13 @@ namespace TARDIS::UI
 
 	private:
 		std::string   m_label;
+
+		// holding the initial value.
 		std::string   m_content;
-		uint64_t      m_value;
+
+		// this is big enough to hold all integers and floating numbers. e.g. long long, double.
+		uint64_t      m_value;    
 		ImGuiDataType m_dataType;
 		float         m_speed;
-
 	};
 }

@@ -34,12 +34,16 @@ namespace TARDIS::UI
 
 		WidgetContainer* getParent();
 
+		AWidget& setSameline();
+		
+		AWidget& setWidth(float width);
+
 	protected:
 		virtual void drawImpl() = 0;
 
 	public:
 		bool enabled = true;
-		bool lineBreak = true;
+		
 
 	protected:
 		WidgetContainer* m_parent;
@@ -48,7 +52,9 @@ namespace TARDIS::UI
 
 	private:
 		static uint64_t ID_INCREMENT;
-		bool m_destroyed = false;
+		bool  m_destroyed = false;
+		bool  m_lineBreak = true;
+		float m_width     = 1.0f;
 	};
 }
 

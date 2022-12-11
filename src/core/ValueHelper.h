@@ -117,11 +117,9 @@ namespace TARDIS::CORE
 		}
 
 		static return_type fromString(const std::string& str);
+
 		static std::string toString(pass_type val);
 	};
-
-
-
 
 	template<>
 	class ValueHelper<char*>

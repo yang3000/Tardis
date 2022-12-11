@@ -19,39 +19,42 @@ namespace TARDIS::UI
             auto params = tRunner->getParams();
             for(auto& p : params)
             {
-                //ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), p->m_name.c_str());
-                //ImGui::SameLine();
-                //createWidget<InputText>(p->m_name.c_str(), p->m_value.c_str());
                 switch (p->m_typeId)
                 {
                 case TardisDataType_S8:
-                case TardisDataType_U8:  
-                case TardisDataType_S16: 
-                case TardisDataType_U16: 
-                case TardisDataType_S32: 
-                case TardisDataType_U32: 
-                case TardisDataType_S64: 
-                case TardisDataType_U64: 
+                case TardisDataType_U8:
+                case TardisDataType_S16:
+                case TardisDataType_U16:
+                case TardisDataType_S32:
+                case TardisDataType_U32:
+                case TardisDataType_S64:
+                case TardisDataType_U64:
                 case TardisDataType_Float:
                 case TardisDataType_Double:
                 case TardisDataType_Bool:
-                    createWidget<DragSingleScalar>(p->m_name.c_str(), p->m_value.c_str(), p->m_typeId);
+                    createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
+                    .setSameline()
+                    .setWidth(0.7f)
+                    .addPlugin<DataDispatcher<std::string>>()
+                    .registerReference(p->m_value);
                     break;
                 case TardisDataType_String:
-                    createWidget<InputText>(p->m_name.c_str(), p->m_value.c_str(), true);
-                    createWidget<HelperMarker>(p->m_desc);
-                    
+                    createWidget<InputText>("", p->m_value.c_str())
+                    .setSameline()
+                    .setWidth(0.7f)
+                    .addPlugin<DataDispatcher<std::string>>()
+                    .registerReference(p->m_value);
                     break;
                 default:
                     break;
                 }
-                // if(p->m_typeId < TardisDataType_String)
-                // {
-                //     createWidget<InputText>(p->m_name.c_str(), p->m_value.c_str());
-                // }
 
-                // auto& paramWidget = createWidget<DragSingleScalar>(p->m_name.c_str(), "", ImGuiDataType_S8);
-                // paramWidget.addPlugin<DataDispatcher<std::string>>().registerReference(p->m_name);
+                createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
+                .setSameline()
+                .setWidth(0.3f)
+                .addPlugin<DataDispatcher<std::string>>()
+                .registerReference(p->m_get);
+                createWidget<HelperMarker>(p->m_desc);
             }
         }
         //  createWidget<DragSingleScalar>("TestDrag Char", "12", ImGuiDataType_S8);
@@ -68,22 +71,11 @@ namespace TARDIS::UI
 
     void WidgetRunnerProperty::drawImpl()
 	{
-		//ImGui::Button("test");
         auto runner = m_runner.lock();
         if(runner)
         {
             ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Params");
-            // auto params = runner->getParams();
-            // for(auto& p : params)
-            // {
-            //     ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), p->m_name.c_str());
-            //     ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), p->m_type.c_str());
-            //     ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), p->m_value.c_str());
-            //     ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), p->m_get.c_str());
-
-            // }
             drawWidgets();
         }
-       
 	}
 }

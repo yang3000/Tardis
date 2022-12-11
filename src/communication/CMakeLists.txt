@@ -1,8 +1,7 @@
 # 设置变量
 SET(SERIALPORT_LIB_SRC 
 ./SerialPort.h 
-./SerialPort.cpp 
-../../src/core/Plugin.cpp 
+./SerialPort.cpp
 ../../src/core/CallerContainer.cpp)
 
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)

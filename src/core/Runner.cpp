@@ -1,14 +1,13 @@
 #include "Runner.h"
 
+#include "ValueHelper.h"
+#include "PluginManager.h"
+#include "SpdLog.h"
 #include "ICaller.h"
 #include "Engine.h"
-#include "ValueHelper.h"
-#include "SpdLog.h"
-//#include "RunnerArgs.h"
 
 namespace TARDIS::CORE
 {
-
     uint64_t Runner::ID_INCREMENT = 0;
 
 	Runner::Runner(const std::string& name, bool lock, bool skip, bool pause, bool times) :
@@ -29,106 +28,54 @@ namespace TARDIS::CORE
 		m_times(1)
 	{};
 
-
-	// bool Runner::exec(Engine* engine)
-	// {
-	// 	auto funcData = engine->getFunctor(m_moduleId, m_functor);
-	// 	if (!funcData)
-	// 	{
-	// 		engine->m_thread_logger->error("can not find functor[{}] from module[{}]", m_functor, m_moduleId);
-	// 		return false;
-	// 	}
-
-	// 	auto& functor = funcData->m_functorSlot;
-
-	// 	RunnerArgs args(engine, this);
-
-	// 	for (uint32_t i = 0; i < m_times; i++)
-	// 	{
-	// 		//std::lock_guard<std::mutex> locker(m_mutex);
-
-	// 		if (!functor(args))
-	// 		{
-	// 			return false;
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
 	bool Runner::exec(Engine* engine)
 	{
-
-		//RunnerArgs args(engine, this);
         LOG_INFO(engine->getEngineId(), "--------------------------------");
         LOG_INFO(engine->getEngineId(), "start run:{}", m_name);
 
-        
-
+        // find plugin
         auto it = engine->m_plugins.find(m_moduleId);
         if (it == engine->m_plugins.end())
         {
+            LOG_ERROR(engine->getEngineId(), "can not find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
             return false;
         }
+        LOG_INFO(engine->getEngineId(), "find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
 
-        LOG_INFO(engine->getEngineId(), "find module:{}", m_moduleId);
-
-
+        // find caller
         ICaller *pCaller = it->second->getCaller(m_caller.c_str());
         if (!pCaller)
         {
+            LOG_INFO(engine->getEngineId(), "can not find caller:{}", m_caller);
             return false;
         }
         LOG_INFO(engine->getEngineId(), "find caller:{}", m_caller);
 
-
-        Str* params = nullptr;
-        int param_count = m_params.size();
-        if(param_count > 0)
+        // initialize params
+        AssignParam params(m_params.size());
+        for (int i = 0; i < params.n; ++i)
         {
-            params = new (std::nothrow) Str[param_count];
-            if(!params)
+            if (!m_params[i]->m_get.empty())
             {
-                return false;
+                params.push(engine->getPoolData(m_params[i]->m_get));
             }
-            for (int i = 0; i < param_count; ++i)
+            else
             {
-                if (!m_params[i]->m_get.empty())
-                {
-                    params[i] = engine->getPoolData(m_params[i]->m_get);
-                }
-                else
-                {
-                    params[i].buf = m_params[i]->m_value.c_str();
-                    params[i].len = m_params[i]->m_value.size();
-                }
-                //auto sss = TARDIS::CORE::ValueHelper<const char *>::fromString(std::string(params[i].buf, params[i].len));
+                params.push(m_params[i]->m_value.c_str(), m_params[i]->m_value.size());
             }
         }
 
-       
-
+        // execute caller
         for (uint32_t i = 0; i < m_times; ++i)
 		{
 			//std::lock_guard<std::mutex> locker(m_mutex);
-			if (!(*pCaller)(params))
+			if (!(*pCaller)(params.args))
 			{
 				return false;
 			}
 		}
-        if(params)
-        {
-            delete[] params;
-        }
-       
 		return true;
 	}
-
-	// void Runner::setFunctorData(std::string type, std::string moduleId, std::string functor)
-	// {
-	// 	//m_type     = std::move(type);
-	// 	//m_moduleId = std::move(moduleId);
-	// 	//m_functor  = std::move(functor);
-	// }
 
 	void Runner::onDeserialize(std::shared_ptr<CORE::RapidJsonParser> json_node)
 	{
@@ -140,7 +87,7 @@ namespace TARDIS::CORE
 
         if (json_node->nodeBegin("runner"))
         {
-            m_moduleId = json_node->get<std::string>("module_id");
+            m_moduleId = json_node->get<uint64_t>("module_id");
             m_caller   = json_node->get<std::string>("method");
             if (json_node->nodeBegin("input"))
             {
@@ -167,7 +114,5 @@ namespace TARDIS::CORE
     }
 
 	Runner::~Runner()
-	{
-		
-	}
+	{}
 }

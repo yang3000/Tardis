@@ -8,6 +8,9 @@ class ImVec4;
 namespace TARDIS::CORE
 {
     class Runner;
+    class Engine;
+    class CallBackImpl;
+    class SpdLog;
 }
 namespace TARDIS::UI
 {
@@ -15,6 +18,7 @@ namespace TARDIS::UI
     {
     public:
         PanelSequenceEditor();
+        ~PanelSequenceEditor();
 
         static void TestStatusButton(const char *id, const ImVec4 &color, bool running);
 
@@ -23,6 +27,12 @@ namespace TARDIS::UI
 
     protected:
         void drawImpl() override;
+
+    private:
+        //std::unique_ptr<CORE::Engine> m_engine;
+        std::shared_ptr<CORE::Engine>       m_engine;
+        std::shared_ptr<CORE::CallBackImpl> m_plugin_cb;
+        std::shared_ptr<CORE::SpdLog>       m_plugin_log;
 
     };
 }

@@ -96,8 +96,10 @@ namespace TARDIS::CORE
 		bool getLock() const { return m_lock; }
 		const std::string& getId()  const { return m_id; }
 		const std::string& getName() const { return m_name; }
+		const uint64_t& getModuleId() const { return m_moduleId; }
 
         void addOutput(const std::string& k, const std::string& v) { m_output.emplace(k, v); }
+		
         std::string getOutput(const std::string& k) const { 
             auto it = m_output.find(k);
             return (it == m_output.cend()) ? it->second : "";
@@ -125,7 +127,7 @@ namespace TARDIS::CORE
 
 		// functor data
 		//std::string  m_type;
-		std::string  m_moduleId;
+		uint64_t     m_moduleId;
 		std::string  m_caller;
 
 		std::mutex   m_mutex;

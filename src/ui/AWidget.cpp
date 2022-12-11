@@ -41,16 +41,30 @@ namespace TARDIS::UI
 		return m_parent;
 	}
 
+	AWidget& AWidget::setSameline()
+	{
+		m_lineBreak = false;
+		return *this;
+	}
+		
+	AWidget& AWidget::setWidth(float width)
+	{
+		m_width = width;
+		return *this;
+	}
+
 	void AWidget::draw()
 	{
 		if (enabled)
 		{
+			ImGui::PushItemWidth(ImGui::CalcItemWidth() * m_width);
 			drawImpl();
+			ImGui::PopItemWidth();
 
 			if (m_autoExecutePlugins)
 				executePlugins();
 
-			if (!lineBreak)
+			if (!m_lineBreak)
 				ImGui::SameLine();
 		}
 	}

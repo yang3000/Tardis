@@ -2,7 +2,7 @@
 
 namespace TARDIS
 {
-    SerialPort::SerialPort(std::string name) : CORE::Plugin(std::move(name))
+    SerialPort::SerialPort(std::string name) : CORE::Plugin<SerialPort>(std::move(name))
     {
     }
 
@@ -71,6 +71,6 @@ namespace TARDIS
 
 extern "C" TARDIS_EXPORT  TARDIS::CORE::IPlugin* CreatePlugin()
 {
-	auto pPlugin = TARDIS::CORE::Plugin::CreateInstance<TARDIS::SerialPort>("SerialPort");
+	auto pPlugin = TARDIS::SerialPort::CreateInstance("SerialPort");
     return pPlugin;
 }

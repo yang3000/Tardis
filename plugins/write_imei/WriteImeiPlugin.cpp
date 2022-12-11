@@ -41,6 +41,6 @@ bool WriteImeiPlugin::WriteSn(std::string sn)
 
 extern "C" TARDIS_EXPORT TARDIS::CORE::IPlugin* CreatePlugin()
 {
-	auto plugin = TARDIS::CORE::Plugin::CreateInstance<WriteImeiPlugin>("WriteImei");
+	auto plugin = WriteImeiPlugin::CreateInstance("WriteImei");
     return plugin;
 }

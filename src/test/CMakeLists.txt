@@ -3,6 +3,7 @@ set( CORE_SOURCE_FILES
     Test.cpp
     ../core/SpdLog.cpp 
     ../core/DynamicModule.cpp 
+    ../core/PluginManager.cpp 
     ../core/RapidJsonParser.cpp 
     ../core/JsonParser.cpp 
     ../core/RawDataContainer.cpp

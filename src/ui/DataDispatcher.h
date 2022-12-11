@@ -1,8 +1,10 @@
 #pragma once
 
-#include "IPlugin.h"
-
 #include <functional>
+
+#include "IPlugin.h"
+#include "ValueHelper.h"
+
 
 #define TRY_GATHER(type, output)	if (auto plugin = getPlugin<DataDispatcher<type>>(); plugin) output = plugin->gather();
 #define TRY_PROVIDE(type, output)	if (auto plugin = getPlugin<DataDispatcher<type>>(); plugin) plugin->provide(output);

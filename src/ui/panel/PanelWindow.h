@@ -8,10 +8,6 @@ namespace TARDIS::UI
 	class PanelWindow : public APanel
 	{
 	public:
-		//static const std::string EventOpen;
-
-		//static const std::string EventClose;
-
 		PanelWindow(const std::string& name = "", bool opened = true);
 
 		~PanelWindow();

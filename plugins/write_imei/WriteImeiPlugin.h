@@ -2,7 +2,7 @@
 
 #include "Plugin.h"
 
-class WriteImeiPlugin : public TARDIS::CORE::Plugin
+class WriteImeiPlugin : public TARDIS::CORE::Plugin<WriteImeiPlugin>
 {
 public:
 	WriteImeiPlugin(std::string name);

@@ -367,8 +367,8 @@ namespace TARDIS::UI
 		//config.GlyphMinAdvanceX = 16.0f;
 		//config.GlyphMaxAdvanceX = 24.0f;
 		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-regular-400.ttf", 16, &config, icon_ranges);
-		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-solid-900.ttf", 16, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-regular-400.ttf", 12, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-solid-900.ttf", 12, &config, icon_ranges);
 		//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 		//IM_ASSERT(font != NULL);
 
