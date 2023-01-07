@@ -64,9 +64,13 @@ namespace TARDIS::CORE
 
 		Runner();
 
+		Runner(const Runner& runner);
+		
 		~Runner();
 
 		void onDeserialize(std::shared_ptr<CORE::RapidJsonParser> json_node);
+
+		bool OnSerialize(CORE::RapidJsonParser::Writer &json_writer);
 
 
 		bool exec(Engine* engine);
@@ -90,6 +94,8 @@ namespace TARDIS::CORE
 		void setLock(bool lock) { m_lock = lock; }
 		void setName(std::string name) { m_name = name; }
 		void setId(std::string id) { m_id = id.empty() ? Helper::GenerateHex() : id; }
+		void setModuleId(uint64_t id) { m_moduleId = id; };
+		void setCallerName(std::string name) {m_caller = name; };
 
 		bool getSkip() const { return m_skip; }
 		bool getPaused() const { return m_paused; }
@@ -97,17 +103,30 @@ namespace TARDIS::CORE
 		const std::string& getId()  const { return m_id; }
 		const std::string& getName() const { return m_name; }
 		const uint64_t& getModuleId() const { return m_moduleId; }
+		const std::string& getCallerName() const { return m_caller; }
 
         void addOutput(const std::string& k, const std::string& v) { m_output.emplace(k, v); }
 		
-        std::string getOutput(const std::string& k) const { 
+        std::string getOutput(const std::string& k) const 
+		{ 
             auto it = m_output.find(k);
             return (it == m_output.cend()) ? it->second : "";
            
            // (it == m_output.cend()) ? it->second : "";
             //return (auto it = m_output.find(k)) != m_output.cend() ? it->second : "";
-            } 
+        } 
 		
+		void addParam(std::shared_ptr<Param> param) { m_params.emplace_back(param); }
+		void addParam(const std::string &name,
+					  const std::string &value,
+					  const std::string &get,
+					  const std::string &desc,
+					  const std::string &type,
+					  UInt typeId)
+		{
+			addParam(std::make_shared<Param>(name, value, get, desc, type, typeId));
+		}
+
 		auto& getParams() { return m_params; }
 		
 
@@ -128,6 +147,7 @@ namespace TARDIS::CORE
 		// functor data
 		//std::string  m_type;
 		uint64_t     m_moduleId;
+
 		std::string  m_caller;
 
 		std::mutex   m_mutex;

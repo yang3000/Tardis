@@ -36,25 +36,27 @@ namespace TARDIS::UI
 
 		AWidget& setSameline();
 		
-		AWidget& setWidth(float width);
+		AWidget& setWidth(float w);
 
 	protected:
 		virtual void drawImpl() = 0;
 
 	public:
-		bool enabled = true;
+		bool  enabled = true;
+		float width   = 1.0f;
 		
 
 	protected:
 		WidgetContainer* m_parent;
 		std::string m_widgetID = "#-1";
-		bool m_autoExecutePlugins = true;
+		bool  m_autoExecutePlugins = true;
+		
 
 	private:
 		static uint64_t ID_INCREMENT;
 		bool  m_destroyed = false;
 		bool  m_lineBreak = true;
-		float m_width     = 1.0f;
+
 	};
 }
 

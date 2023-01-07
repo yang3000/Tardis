@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Plugin.h"
+#include "Communication.h"
 
 namespace TARDIS
 {
 	class DynamicModule;
+	class Communication;
     class IHonorCustomization;
 }
 
@@ -20,6 +22,9 @@ public:
     bool WriteImei(const char* imei, int len);
 
     void TestCommunication(uint64_t id, std::string cmd);
+
+    void TestCommunicationEx(TARDIS::Communication* commu, std::string cmd);
+
 
     bool Test1(const char* imei);
     bool Test2();

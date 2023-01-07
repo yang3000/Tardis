@@ -2,7 +2,9 @@
 
 #include "../AWidget.h"
 #include "../WidgetContainer.h"
+
 #include "Runner.h"
+#include "Event.h"
 
 namespace TARDIS::UI
 {
@@ -19,6 +21,8 @@ namespace TARDIS::UI
         protected:
 		    virtual void drawImpl() override;
 
+        public:
+            CORE::Event<std::string> NameChangedEvent;
         private:
             std::weak_ptr<CORE::Runner> m_runner;
     };

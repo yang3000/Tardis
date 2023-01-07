@@ -11,7 +11,7 @@ namespace TARDIS::UI
 	class InputText : public DataWidget<std::string>
 	{
 	public:
-		InputText(const std::string& label, const std::string& content);
+		InputText(const std::string& label, const std::string& content = "");
 
 		const std::string GetLabel() const { return m_label; };
 		const std::string GetContent() const { return m_content; };

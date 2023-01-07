@@ -20,11 +20,23 @@ namespace TARDIS::CORE
         template <int... S>
         R call(Seq<S...>, Str *params) 
         { 
-            return m_fn(ValueHelper<Args>::fromString(std::string(params[S].buf, params[S].len))...); 
+            return m_fn(ValueHelper<Args>().from(std::string(params[S].buf, params[S].len))...); 
         }
 
         bool operator()(Str *params)
         {
+            R res = call(m_seq, params);
+            return !!res;
+        }
+
+        template <int... S> 
+        R call(Seq<S...>, MemoryBuffer *params) 
+        { 
+            return m_fn(ValueHelper<Args>::from(params[S])...); 
+        }
+
+        bool operator()(MemoryBuffer *params) 
+        { 
             R res = call(m_seq, params);
             return !!res;
         }
@@ -47,11 +59,23 @@ namespace TARDIS::CORE
         template <int... S>
         void call(Seq<S...>, Str *params) 
         { 
-            m_fn(ValueHelper<Args>::fromString(std::string(params[S].buf, params[S].len))...); 
+            m_fn(ValueHelper<Args>::from(std::string(params[S].buf, params[S].len))...); 
         }
 
         bool operator()(Str *params)
         {
+            call(m_seq, params);
+            return true;
+        }
+
+        template <int... S> 
+        void call(Seq<S...>, MemoryBuffer *params) 
+        { 
+             m_fn(ValueHelper<Args>::from(params[S])...); 
+        }
+
+        bool operator()(MemoryBuffer *params) 
+        { 
             call(m_seq, params);
             return true;
         }

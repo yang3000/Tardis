@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Communication.h"
-#include "../core/Plugin.h"
+#include "Plugin.h"
 
 namespace TARDIS
 {

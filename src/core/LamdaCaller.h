@@ -16,7 +16,7 @@ namespace TARDIS::CORE
         LamdaCaller(Fn fn) : m_fn(fn) {}
 
         template <int... S>
-        R call(Seq<S...>, Str *params) { return m_fn(ValueHelper<Args>::fromString(std::string(params[S].buf, params[S].len))...); }
+        R call(Seq<S...>, Str *params) { return m_fn(ValueHelper<Args>::from(std::string(params[S].buf, params[S].len))...); }
 
         bool operator()(Str *params)
         {

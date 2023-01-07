@@ -59,6 +59,11 @@ namespace TARDIS::UI
 			//if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
 			//static bool open = true;
 
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 4.0f));
+			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 16.0f);
+
+			
+
 			if (ImGui::Begin((m_name + m_panelID).c_str(), &m_opened, window_flags))
 			{
 				if (!m_opened)
@@ -68,9 +73,10 @@ namespace TARDIS::UI
 				
 
 				drawWidgets();
+				ImGui::End();
 			}
+			        ImGui::PopStyleVar(2);
 
-			ImGui::End();
 		}
 	}
 }

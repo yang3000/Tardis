@@ -13,13 +13,11 @@ namespace TARDIS::UI
             CloseEvent.invoke();
 		}
 
-		ImGui::PushID(m_widgetID.c_str());
-
-        if (ImGui::CollapsingHeader(m_header.c_str(), &m_isOpen, ImGuiTreeNodeFlags_DefaultOpen))
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f, 8.0f));
+        if (ImGui::CollapsingHeader((m_header + m_widgetID).c_str(), &m_isOpen, ImGuiTreeNodeFlags_DefaultOpen))
         {
 			drawWidgets();
         }
-
-		ImGui::PopID();
+		ImGui::PopStyleVar();
 	}
 }

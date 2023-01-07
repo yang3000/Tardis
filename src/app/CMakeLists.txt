@@ -24,15 +24,33 @@ set( CORE_SOURCE_FILES
     ../ui/WidgetContainer.cpp
 
     ../ui/layout/Collapsing.cpp
+    ../ui/layout/CollapsingEx.cpp
+    ../ui/layout/GroupSameline.cpp
+    ../ui/layout/GroupChild.cpp
+    ../ui/layout/TreeNode.cpp
     ../ui/widgets/WidgetRunnerProperty.cpp
+    ../ui/widgets/CheckBox.cpp
+    ../ui/widgets/Text.cpp
+    ../ui/widgets/LabelText.cpp
+    ../ui/widgets/Separator.cpp
+    ../ui/widgets/Spacing.cpp
+    ../ui/widgets/TextColored.cpp
+    ../ui/widgets/Button.cpp
     ../ui/widgets/InputText.cpp
+    ../ui/widgets/ComboBox.cpp
     ../ui/widgets/HelperMarker.cpp
     ../ui/widgets/DragSingleScalar.cpp
+    ../ui/widgets/Caller.cpp
+    ../ui/widgets/NewPlugin.cpp
     ../ui/panel/PanelWindow.cpp
     ../ui/panel/PanelMenuBar.cpp
     ../ui/panel/PanelSequenceEditor.cpp
     ../ui/panel/PanelProperties.cpp
+    ../ui/panel/PanelPluginManager.cpp
 )
+
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/test)
+
 #add_executable(main main.cpp  ${CORE_SOURCE_FILES})
 add_executable(tardis Tardis.cpp  ${CORE_SOURCE_FILES})
 # add_executable(tardis Test.cpp  ${CORE_SOURCE_FILES})

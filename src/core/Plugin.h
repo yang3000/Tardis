@@ -49,7 +49,6 @@ namespace TARDIS::CORE
 
         void destroy() override;
 
-
         void addPoolData(const char* key, const char* value);
 
         void addOutput(const char *key, const char *value);
@@ -76,6 +75,7 @@ namespace TARDIS::CORE
 
     protected:
         Log *m_logger;
+
         CallerContainer *m_callerContainer;
 
     private:
@@ -84,6 +84,7 @@ namespace TARDIS::CORE
         VCallBack* m_pFn;
 
         std::string m_name;
+
     };
 }
 

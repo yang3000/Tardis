@@ -10,6 +10,7 @@
 #include "panel/PanelMenuBar.h"
 #include "panel/PanelSequenceEditor.h"
 #include "panel/PanelProperties.h"
+#include "panel/PanelPluginManager.h"
 #include "PanelsManager.h"
 //#include "SequenceEditView.h"
 //#include "ModulesView.h"
@@ -18,7 +19,7 @@
 #include "IconsFontAwesome5.h"
 #include "Runner.h"
 //#include "EngineManager.h"
-//#include "PluginManager.h"
+#include "PluginManager.h"
 //#include "RapidJsonParser.h"
 //#include "RunnerProperty.h"
 
@@ -66,6 +67,22 @@ namespace TARDIS::UI
             m_panelsManager.getPanelAs<PanelProperties>("PanelProperties").onSelectedRunner(runner);
             //panelProperties.onSelectedRunner(runner);
         });
+
+        m_panelsManager.createPanel<PanelPluginManager>("PanelPluginManager");
+
+		auto  panelPluginManager = &m_panelsManager.getPanelAs<PanelPluginManager>("PanelPluginManager");
+		auto &plugins = CORE::PluginManager::GetPlugins();
+		for (auto &[id, pluginContainer] : plugins)
+		{
+			panelPluginManager->onAddPlugin(id, pluginContainer);
+		}
+
+		CORE::PluginManager::LoadPluginEvent.addListener([panelPluginManager](uint64_t pluginId, std::shared_ptr<CORE::PluginContainer> container)
+        {
+            panelPluginManager->onAddPlugin(pluginId, container);
+        });
+		
+
 		// static std::shared_ptr<CORE::RapidJsonParser> parser = std::make_shared<CORE::RapidJsonParser>();
 		// parser->parseJsonFile("C:\\Users\\yangh\\Desktop\\Tardis\\bin\\Debug\\sequence.json");
 

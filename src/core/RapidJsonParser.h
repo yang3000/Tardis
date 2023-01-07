@@ -6,16 +6,21 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/pointer.h"
+#include "rapidjson/prettywriter.h"
 #include "JsonParser.h"
 //#include "Exceptions.h"
 
 #include "RawDataContainer.h"
+#include "Event.h"
 
 namespace TARDIS::CORE
 {
 	class RapidJsonParser : public JsonParser
 	{
 	public:
+
+		using Writer = rapidjson::PrettyWriter<rapidjson::StringBuffer>;
+
 		RapidJsonParser();
 
 		~RapidJsonParser();
@@ -85,12 +90,16 @@ namespace TARDIS::CORE
 			return m_node_stack.back().second->Size();
 		}
 
+	public:
+		Event<Writer&> SerializeEvent;
 
 	private:
 
 		static rapidjson::Document m_doc;
 
 		std::vector<std::pair<std::string, rapidjson::Value*>> m_node_stack;
+
+		Writer m_writer;
 	};
 }
 

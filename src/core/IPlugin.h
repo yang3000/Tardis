@@ -2,10 +2,24 @@
 
 #include "Base.h"
 
+typedef void (*ParseCallBack)(const char *, Param *, unsigned);
+
 namespace TARDIS
 {
     class Communication;
+    namespace CORE
+    {
+        class ICaller;
+        class Log;
+    }
 }
+
+struct CallerParameters
+{
+    CChar name;
+    Param *params;
+    UInt count;
+};
 
 namespace TARDIS::CORE
 {
@@ -27,10 +41,6 @@ namespace TARDIS::CORE
 
         virtual Communication* getCommunication(uint64_t moduleId) = 0;
     };
-
-    class ICaller;
-
-    class Log;
 
     class IPlugin
     {

@@ -6,6 +6,8 @@
 
 #include "Runner.h"
 #include "../layout/Collapsing.h"
+#include "../layout/CollapsingEx.h"
+#include "../layout/GroupChild.h"
 #include "../widgets/WidgetRunnerProperty.h"
 #include "../DataDispatcher.h"
 #include "../plugin/Callback.h"
@@ -13,7 +15,8 @@
 namespace TARDIS::UI
 {
     PanelProperties::PanelProperties() 
-        : PanelWindow("Properties")
+        : PanelWindow("Runner Properties")
+        , m_groupChild(createWidget<GroupChild>())
     {}
 
     void PanelProperties::onSelectedRunner(std::weak_ptr<CORE::Runner> runner)
@@ -27,9 +30,30 @@ namespace TARDIS::UI
         }
         cache.emplace_back(runner);
 
-        auto& collapsing = createWidget<Collapsing>(runner.lock()->getName());
-        collapsing.createWidget<WidgetRunnerProperty>(runner);
-        collapsing.addPlugin<Callback>([runner, &collapsing]{ if(!runner.lock()) { collapsing.destroy(); }});
-        collapsing.CloseEvent.addListener([this, runner]{ cache.erase(std::remove_if(cache.begin(), cache.end(), [runner](auto el){ return el.lock() == runner.lock(); }), cache.end());});
+        auto collapsing = &m_groupChild.createWidget<CollapsingEx>(runner.lock()->getName());
+       // auto collapsing = &createWidget<CollapsingEx>(runner.lock()->getName());
+        collapsing->createWidget<WidgetRunnerProperty>(runner)
+        .NameChangedEvent
+        .addListener([collapsing](std::string name)
+        { 
+            collapsing->updateHeader(name); 
+        });
+
+        collapsing->addPlugin<Callback>([runner, collapsing]
+        { 
+            if(!runner.lock()) 
+            { 
+                collapsing->destroy(); 
+            }
+        });
+
+        collapsing->CloseEvent
+        .addListener([this, runner]
+        { 
+            cache.erase(std::remove_if(cache.begin(), cache.end(), [runner](auto el)
+            { 
+                return el.lock() == runner.lock(); 
+            }), cache.end());
+        });
     }
 }

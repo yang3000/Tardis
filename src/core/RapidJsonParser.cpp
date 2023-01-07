@@ -38,8 +38,9 @@ namespace TARDIS::CORE
 	void RapidJsonParser::toJsonString(RawDataContainer& source)
 	{
 		rapidjson::StringBuffer buffer;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-		m_doc.Accept(writer);
+		m_writer.Reset(buffer);
+		m_writer.SetIndent(' ', 2);
+		SerializeEvent.invoke(m_writer);
 		source.copyData(buffer.GetString(), buffer.GetSize());
 	}
 

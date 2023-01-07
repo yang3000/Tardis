@@ -4,7 +4,9 @@ SET(SERIALPORT_LIB_SRC
 ./SerialPort.cpp
 ../../src/core/CallerContainer.cpp)
 
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
+# SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/test)
+
 
 add_library(serial_port_lib SHARED ${SERIALPORT_LIB_SRC})
 

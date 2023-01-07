@@ -24,6 +24,8 @@ namespace TARDIS::CORE
 	const std::string Engine::EventLog("PrintLog");
 
 	Engine::RunnerList Engine::runnerList;
+	Engine::RunnerList Engine::Setup;
+	Engine::RunnerList Engine::Cleanup;
 
 	Engine::Engine(std::string name) :
 		m_name(name),
@@ -72,10 +74,10 @@ namespace TARDIS::CORE
 
 	void Engine::run()
 	{
-
 		if (runnerList.size() == 0) {
 			// RunnerEventArgs event_warn("no node");
 			// fireEvent(EventRunnerWarn, event_warn);
+			onFinish();
 			return;
 		}
 
@@ -86,6 +88,10 @@ namespace TARDIS::CORE
 			if (m_stop)
 			{
 				break;
+			}
+			if(runnerList[i]->getSkip())
+			{
+				continue;
 			}
 
             m_curRunner = runnerList[i];
@@ -133,8 +139,14 @@ namespace TARDIS::CORE
         return str;
     }
 
-    IPlugin* Engine::addPlugin(uint64_t moduleId)
+    IPlugin* Engine::addPlugin(uint64_t moduleId, IPlugin* plugin)
     {
+		if(plugin)
+		{
+			m_plugins.emplace(moduleId, plugin);
+			return plugin;
+		}
+
 		if(!m_plugins.count(moduleId))
 		{
 			auto plugin = PluginManager::CreatePlugin(moduleId);
@@ -158,34 +170,6 @@ namespace TARDIS::CORE
 		}
 		return nullptr;
 	}
-    //bool Engine::onCreateModule(const EventArgs& args)
-	//{
-		// std::string moduleId = static_cast<const CORE::CreateModuleEventArgs&>(args).m_moduleId;
-		// auto pFunConImpl = std::shared_ptr<FunctorContainerImpl>();
-		// PluginManager::CreatePlugin(moduleId, pFunConImpl.get())->setGlobalLogger(Log::DefaultLogger().get());
-		// m_FunctorContainerMap.emplace(moduleId, pFunConImpl.get());
-		//return true;
-	//}
-
-	//FunctorContainer::FunctorData* Engine::getFunctor(const std::string moduleId, const std::string fnName)
-	//{
-		// auto it = m_FunctorContainerMap.find(moduleId);
-		// if (it != m_FunctorContainerMap.end())
-		// {
-		// 	return it->second->getFn(fnName);
-		// }
-		// return nullptr;
-	//}
-
-	//void Engine::setPluginThreadLogger(spdlog::logger* logger)
-	//{
-		/*auto it = m_FunctorContainerMap.begin();
-		while (it != m_FunctorContainerMap.end())
-		{
-			it->second->setThreadLogger(logger);
-			it++;
-		}*/
-	//}
 
 	bool Engine::RemoveAllRunner()
 	{

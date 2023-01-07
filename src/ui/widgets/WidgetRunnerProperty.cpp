@@ -1,12 +1,20 @@
 #include "WidgetRunnerProperty.h"
 
 #include "../imgui/imgui.h"
+#include "../imgui/imgui_internal.h"
 
-#include "InputText.h"
+#include "Text.h"
+#include "CheckBox.h"
+#include "ComboBox.h"
 #include "DragSingleScalar.h"
 #include "InputText.h"
+#include "Spacing.h"
 #include "HelperMarker.h"
 #include "../DataDispatcher.h"
+#include "PluginManager.h"
+#include "ValueHelper.h"
+#include "../layout/GroupSameline.h"
+#include "../plugin/Callback.h"
 
 namespace TARDIS::UI
 {
@@ -16,6 +24,14 @@ namespace TARDIS::UI
         auto tRunner = m_runner.lock();
         if(tRunner)
         {
+            createWidget<InputText>("Name",  tRunner->getName())
+            .TextChangedEvent
+            .addListener([tRunner, this](std::string name){ tRunner->setName(name); NameChangedEvent.invoke(name);});
+
+            createWidget<CheckBox>("Skip",   tRunner->getSkip()).setSameline();
+            createWidget<CheckBox>("Lock",   tRunner->getLock()).setSameline();
+            createWidget<CheckBox>("Paused", tRunner->getPaused());
+            createWidget<Text>(tRunner->getCallerName());
             auto params = tRunner->getParams();
             for(auto& p : params)
             {
@@ -32,30 +48,69 @@ namespace TARDIS::UI
                 case TardisDataType_Float:
                 case TardisDataType_Double:
                 case TardisDataType_Bool:
-                    createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
-                    .setSameline()
+                {
+                    auto& groupSameline = createWidget<GroupSameline>();
+
+                    groupSameline
+                    .createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
+                    //.setSameline()
                     .setWidth(0.7f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_value);
+
+                    groupSameline
+                    .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
+                    .setSameline()
+                    .setWidth(0.3f)
+                    .addPlugin<DataDispatcher<std::string>>()
+                    .registerReference(p->m_get);
+
+                    createWidget<HelperMarker>(p->m_desc);
                     break;
+                }
                 case TardisDataType_String:
-                    createWidget<InputText>("", p->m_value.c_str())
-                    .setSameline()
+                {
+                    auto& groupSameline = createWidget<GroupSameline>();
+
+                    groupSameline
+                    .createWidget<InputText>("", p->m_value.c_str())
+                    //.setSameline()
                     .setWidth(0.7f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_value);
+
+                    groupSameline
+                    .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
+                    .setSameline()
+                    .setWidth(0.3f)
+                    .addPlugin<DataDispatcher<std::string>>()
+                    .registerReference(p->m_get);
+
+                    createWidget<HelperMarker>(p->m_desc);
                     break;
+                }
+                case TardisDataType_Communication:
+                {
+                    auto& comboBox = createWidget<ComboBox>(p->m_name.c_str(), TARDIS::CORE::ValueHelper<uint64_t>::from(p->m_value));
+                    comboBox.setWidth(0.7f);
+                    comboBox.ValueChangedEvent.addListener([p](uint64_t value) { p->m_value = TARDIS::CORE::ValueHelper<uint64_t>::toString(value); });
+                    auto& plugins  = TARDIS::CORE::PluginManager::GetPlugins();
+                    for(const auto&[id, plugin] : plugins)
+                    {
+                        comboBox.addElement(id, plugin->getName());
+                    }
+                    break;
+                }
+
                 default:
                     break;
                 }
 
-                createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
-                .setSameline()
-                .setWidth(0.3f)
-                .addPlugin<DataDispatcher<std::string>>()
-                .registerReference(p->m_get);
-                createWidget<HelperMarker>(p->m_desc);
+
             }
+
+            createWidget<Spacing>();
+            createWidget<Spacing>();
         }
         //  createWidget<DragSingleScalar>("TestDrag Char", "12", ImGuiDataType_S8);
         //  createWidget<DragSingleScalar>("TestDrag UChar", "12", ImGuiDataType_U8);
@@ -75,6 +130,25 @@ namespace TARDIS::UI
         if(runner)
         {
             ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Params");
+            // static char content[128];
+            // ImGui::Button("43453");
+            // ImGui::SameLine();
+            // ImGui::InputText("345345", content, sizeof(content));
+            // ImGui::InputText("345345##111", content, sizeof(content));
+
+            // ImGuiStyle& style = ImGui::GetStyle();
+            // float w = IM_FLOOR((ImGui::CalcItemWidth() - style.ItemSpacing.x) * 0.7f);
+            // ImGui::PushItemWidth(w);
+			// ImGui::InputText("##23", content, sizeof(content));
+			// ImGui::PopItemWidth();
+            // ImGui::SameLine();
+            // ImGui::PushItemWidth(ImGui::CalcItemWidth() - w - style.ItemSpacing.x);
+			// ImGui::InputText("345345##2322", content, sizeof(content));
+			// ImGui::PopItemWidth();
+
+            // static float vec4f[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
+            // ImGui::DragFloat2("drag float2", vec4f, 0.01f, 0.0f, 1.0f);
+
             drawWidgets();
         }
 	}

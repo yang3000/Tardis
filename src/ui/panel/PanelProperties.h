@@ -4,6 +4,7 @@
 
 #include "PanelWindow.h"
 #include "../layout/Collapsing.h"
+#include "../layout/GroupChild.h"
 
 namespace TARDIS::CORE
 {
@@ -18,5 +19,9 @@ namespace TARDIS::UI
         PanelProperties();
 
         void onSelectedRunner(std::weak_ptr<CORE::Runner> runner);
+
+    
+    private:
+        GroupChild& m_groupChild;
     };
 }

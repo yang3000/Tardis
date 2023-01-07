@@ -4,6 +4,8 @@
 #include "DynamicModule.h"
 #include "IHonorCustomizationForDongle.h"
 #include "Helper.h"
+#include "ValueHelper.h"
+#include "Communication.h"
 
 typedef TARDIS::IHonorCustomization* (*ImportModule)();
 
@@ -20,7 +22,6 @@ void test_free(int a)
     HonorCust4Dongle::m_honorCust4Dongle->log(log);
 	return;
 }
-
 
 HonorCust4Dongle* HonorCust4Dongle::m_honorCust4Dongle = nullptr;
 
@@ -54,6 +55,7 @@ bool HonorCust4Dongle::loadCallers()
 	// m_honor_cust->SetupCallback(HonorCust4Dongle::log, true);
 	// LOG_INFO("initialize obj:{} success", "HonorCustomization");
 
+    //TARDIS::CORE::ValueHelper<TARDIS::Communication*>::from("4353");
     // test member function
 	RegisterFunctor("WriteImei", &HonorCust4Dongle::WriteImei, this, 
     {
@@ -61,10 +63,17 @@ bool HonorCust4Dongle::loadCallers()
 		{"Len", "length..."}
     });
 
-    // test ommunication
+    // test communication
 	RegisterFunctor("TestCommunication", &HonorCust4Dongle::TestCommunication, this, 
     {
         {"PluginId", "id"},
+        {"Cmd", "command"}
+    });
+
+    // test communication (serial port)
+	RegisterFunctor("TestCommunicationSerialPort", &HonorCust4Dongle::TestCommunicationEx, this, 
+    {
+        {"Id", "id"},
         {"Cmd", "command"}
     });
 
@@ -165,8 +174,24 @@ void HonorCust4Dongle::TestCommunication(uint64_t id, std::string cmd)
     }
 }
 
+void HonorCust4Dongle::TestCommunicationEx(TARDIS::Communication* commu, std::string cmd)
+{
+    LOG_INFO("call TestCommunicationEx, input cmd:{}", cmd);
+    if(!commu)
+    {
+        LOG_ERROR("the commu pointer is nullptr");
+        return;
+    }
+    commu->sendCommand(cmd.c_str(), cmd.size());
+}
+
 bool HonorCust4Dongle::WriteImei(const char* imei, int len)
 {
+    if(!imei)
+    {
+        LOG_ERROR("imei is empty...");
+        return true;
+    }
     LOG_INFO("running Write Imei...");
     LOG_INFO("imei:{}, len:{}", imei, len);
     

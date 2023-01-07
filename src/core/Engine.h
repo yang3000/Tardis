@@ -47,6 +47,19 @@ namespace TARDIS::CORE
             return true;
         }
 
+        static inline bool registerSetup(std::shared_ptr<Runner> runner)
+        {
+            Setup.emplace_back(runner);
+            return true;
+        }
+
+        static inline bool registerCleanup(std::shared_ptr<Runner> runner)
+        {
+            Cleanup.emplace_back(runner);
+            return true;
+        }
+
+
         // static inline bool onAddRunner(const EventArgs& args)
         // {
         // 	RunnerHandle(static_cast<const RunnerParseEventArgs&>(args).m_jsonParser).parseConfig();
@@ -55,6 +68,26 @@ namespace TARDIS::CORE
 
         static inline bool OnDeserialize(std::shared_ptr<CORE::RapidJsonParser> json_node)
         {
+            if (json_node->nodeBegin("setup"))
+            {
+                if (json_node->is<rapidjson::Value::Array>())
+                {
+                    for (int i = 0; i < json_node->size(); i++)
+                    {
+                        if (json_node->nodeBegin(std::to_string(i)))
+                        {
+                            auto runner = std::make_shared<CORE::Runner>();
+                            runner->onDeserialize(json_node);
+
+                            CORE::Engine::registerSetup(runner);
+
+                            json_node->nodeEnd();
+                        };
+                    }
+                }
+                json_node->nodeEnd();
+            }
+
             if (json_node->nodeBegin("sequences"))
             {
                 // CORE::ValueHelper<size_t>::fromString(json_node->get<std::string>("id"));
@@ -80,6 +113,25 @@ namespace TARDIS::CORE
                 }
                 json_node->nodeEnd();
             }
+            return true;
+        }
+
+        static inline bool OnSerialize(CORE::RapidJsonParser::Writer &json_writer)
+        {
+            json_writer.Key("sequences");
+            json_writer.StartObject();
+            json_writer.Key("id");   json_writer.String("111111");
+            json_writer.Key("name"); json_writer.String("test_sequences");
+
+            json_writer.Key("nodes");
+            json_writer.StartArray();
+            for(auto runner : runnerList)
+            {
+                runner->OnSerialize(json_writer);
+            }
+            json_writer.EndArray();
+
+            json_writer.EndObject();
             return true;
         }
 
@@ -113,7 +165,7 @@ namespace TARDIS::CORE
 
         Str getPoolData(const std::string &key) const;
 
-        IPlugin *addPlugin(uint64_t moduleId);
+        IPlugin *addPlugin(uint64_t moduleId, IPlugin* plugin = nullptr);
 
         IPlugin *getPlugin(uint64_t moduleId);
 
@@ -121,6 +173,10 @@ namespace TARDIS::CORE
 
     public:
         static RunnerList runnerList;
+
+        static RunnerList Setup;
+
+        static RunnerList Cleanup;
 
     private:
         void run();
@@ -130,11 +186,11 @@ namespace TARDIS::CORE
 
         std::string m_engineId;
         std::string m_name;
-        PoolData m_poolData;
+        PoolData    m_poolData;
         
-        bool m_stop;
-        bool m_running;
-        Plugins m_plugins;
+        bool        m_stop;
+        bool        m_running;
+        Plugins     m_plugins;
 
         std::weak_ptr<Runner> m_curRunner;
 

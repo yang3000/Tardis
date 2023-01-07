@@ -11,6 +11,7 @@ namespace TARDIS::CORE
     class Engine;
     class CallBackImpl;
     class SpdLog;
+    class RapidJsonParser;
 }
 namespace TARDIS::UI
 {
@@ -30,9 +31,16 @@ namespace TARDIS::UI
 
     private:
         //std::unique_ptr<CORE::Engine> m_engine;
-        std::shared_ptr<CORE::Engine>       m_engine;
-        std::shared_ptr<CORE::CallBackImpl> m_plugin_cb;
-        std::shared_ptr<CORE::SpdLog>       m_plugin_log;
+        std::shared_ptr<CORE::Engine>          m_engine;
 
+        std::shared_ptr<CORE::Engine>          m_global_setup;
+
+        std::shared_ptr<CORE::Engine>          m_global_cleanup;
+
+        std::shared_ptr<CORE::CallBackImpl>    m_plugin_cb;
+
+        std::shared_ptr<CORE::SpdLog>          m_plugin_log;
+
+        std::shared_ptr<CORE::RapidJsonParser> m_json_parser;
     };
 }

@@ -4,11 +4,23 @@
 #include <sstream>
 #include <string>
 #include "Base.h"
+#include "Event.h"
+#include "../communication/Communication.h"
 
 #if defined(_MSC_VER)
 #	pragma warning(push)
 #	pragma warning(disable : 4996)
 #endif
+
+namespace TARDIS
+{
+	class Communication;
+	namespace CORE
+	{
+		class IPlugin;
+	}
+}
+
 
 namespace TARDIS::CORE
 {
@@ -32,9 +44,14 @@ namespace TARDIS::CORE
 			return ValueHelper<T>::getDataTypeName();
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			return ValueHelper<T>::fromString(str);
+			return ValueHelper<T>::from(str);
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return ValueHelper<T>::from(memory);
 		}
 
 		static inline std::string toString(pass_type val)
@@ -59,9 +76,14 @@ namespace TARDIS::CORE
 			return ValueHelper<T>::getDataTypeName();
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			return ValueHelper<T>::fromString(str);
+			return ValueHelper<T>::from(str);
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return ValueHelper<T>::from(memory);
 		}
 
 		static inline std::string toString(pass_type val)
@@ -87,9 +109,14 @@ namespace TARDIS::CORE
 			return ValueHelper<T*>::getDataTypeName();
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			return ValueHelper<T*>::fromString(str);
+			return ValueHelper<T*>::from(str);
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return ValueHelper<T*>::from(memory);
 		}
 
 		static inline std::string toString(pass_type val)
@@ -98,7 +125,6 @@ namespace TARDIS::CORE
 		}
 	};
 
-	class IPlugin;
 	template<>
 	class ValueHelper<IPlugin*>
 	{
@@ -116,9 +142,47 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str);
+		static inline return_type from(const std::string& str)
+		{
+			return nullptr;
+		}
 
-		static std::string toString(pass_type val);
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return const_cast<IPlugin*>(reinterpret_cast<const IPlugin*>(memory.buf));
+		}
+
+		static std::string toString(pass_type val) {return "";};
+	};
+	
+	template<>
+	class ValueHelper<Communication*>
+	{
+	public:
+		typedef Communication* return_type;
+		typedef Communication* safe_method_return_type;
+		typedef const Communication* pass_type;
+		typedef std::string string_return_type;
+
+		static const TardisDataType Type = TardisDataType_Communication;
+
+		static const std::string& getDataTypeName()
+		{
+			static const std::string type("communication");
+			return type;
+		}
+
+		static inline return_type from(const std::string& str)
+		{
+			return nullptr;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return const_cast<Communication*>(reinterpret_cast<const Communication*>(memory.buf));
+		}
+
+		static std::string toString(pass_type val) {return "";};
 	};
 
 	template<>
@@ -138,9 +202,14 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
 			return str.c_str();
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return reinterpret_cast<return_type>(memory.buf);
 		}
 
 		static inline string_return_type toString(pass_type val)
@@ -153,8 +222,8 @@ namespace TARDIS::CORE
 	class ValueHelper<std::string>
 	{
 	public:
-		typedef const char* return_type;
-		typedef std::string safe_method_return_type;
+		typedef std::string return_type;
+		typedef return_type safe_method_return_type;
 		typedef const std::string& pass_type;
 		typedef std::string string_return_type;
 
@@ -166,9 +235,15 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			return str.c_str();
+			return str;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return reinterpret_cast<return_type>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
@@ -194,17 +269,23 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
 			float val = 0;
-			sscanf(str.c_str(), "%g", &val);
+			sscanf(str.c_str(), "%f", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%g", val);
+			snprintf(buff, sizeof(buff), "%f", val);
 			return std::string(buff);
 		}
 	};
@@ -226,17 +307,23 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
 			double val = 0;
-			sscanf(str.c_str(), " %lg", &val);
+			sscanf(str.c_str(), " %lf", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%g", val);
+			snprintf(buff, sizeof(buff), "%f", val);
 			return std::string(buff);
 		}
 	};
@@ -258,11 +345,17 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			char val = 0;
+			uint32_t val = 0;
 			sscanf(str.c_str(), "%d", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
@@ -290,11 +383,17 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str)
+		static return_type from(const std::string& str)
 		{
-			unsigned char val = 0;
+			uint32_t val = 0;
 			sscanf(str.c_str(), "%u", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			///return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static string_return_type toString(pass_type val)
@@ -322,11 +421,17 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
 			int val = 0;
-			sscanf(str.c_str(), " %d", &val);
+			sscanf(str.c_str(), "%d", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
+			//return *reinterpret_cast<pass_type*>(memory.buf);
 		}
 
 		static inline string_return_type toString(pass_type val)
@@ -354,11 +459,17 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str)
+		static return_type from(const std::string& str)
 		{
 			unsigned int val = 0;
 			sscanf(str.c_str(), "%u", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static string_return_type toString(pass_type val)
@@ -386,17 +497,23 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			long val = 0;
-			sscanf(str.c_str(), "%l", &val);
+			uint64_t val = 0;
+			sscanf(str.c_str(), "%I64d", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%l", val);
+			snprintf(buff, sizeof(buff), "%I64d", val);
 			return std::string(buff);
 		}
 	};
@@ -418,17 +535,23 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str)
+		static return_type from(const std::string& str)
 		{
-			unsigned long val = 0;
-			sscanf(str.c_str(), "%lu", &val);
+			uint64_t val = 0;
+			sscanf(str.c_str(), "%I64u", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%lu", val);
+			snprintf(buff, sizeof(buff), "%I64u", val);
 
 			return std::string(buff);
 		}
@@ -451,17 +574,23 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static inline return_type fromString(const std::string& str)
+		static inline return_type from(const std::string& str)
 		{
-			long long val = 0;
-			sscanf(str.c_str(), "%I64", &val);
+			uint64_t val = 0;
+			sscanf(str.c_str(), "%I64d", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%I64", val);
+			snprintf(buff, sizeof(buff), "%I64d", val);
 			return std::string(buff);
 		}
 	};
@@ -483,11 +612,17 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str)
+		static return_type from(const std::string& str)
 		{
-			unsigned long long val = 0;
+			uint64_t val = 0;
 			sscanf(str.c_str(), "%I64u", &val);
 			return val;
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static string_return_type toString(pass_type val)
@@ -515,20 +650,26 @@ namespace TARDIS::CORE
 			return type;
 		}
 
-		static return_type fromString(const std::string& str)
+		static return_type from(const std::string& str)
 		{
-			return (str == True || str == "True");
+			return str == "True";
+		}
+
+		static inline return_type from(MemoryBuffer memory)
+		{
+			//return *reinterpret_cast<pass_type*>(memory.buf);
+			return from(std::string(static_cast<const char*>(memory.buf), memory.len));
 		}
 
 		static string_return_type toString(pass_type val)
 		{
-			return val ? True : False;
+			return val ? "True" : "False";
 		}
-
-		static const std::string True;
-		static const std::string False;
 	};
 }
+
+//#include "ValueHelper.inl"
+
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif

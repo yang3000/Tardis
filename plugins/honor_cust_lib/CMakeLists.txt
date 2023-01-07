@@ -3,10 +3,11 @@ SET(HONOR_CUST_LIB_SRC
 ./HonorCust4Dongle.h 
 ./HonorCust4Dongle.cpp
 ../../src/core/CallerContainer.cpp 
+../../src/core/ValueHelper.cpp 
 ../../src/core/DynamicModule.cpp)
 
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
-# SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/test)
+# SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../../src/app)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/test)
 
 
 # 第一个参数为你需要构建的dll的名字，第二个为类型

@@ -1,16 +1,17 @@
 #pragma once
 
-#include "Base.h"
-#include "Caller.h"
-#include "FreeCaller.h"
-#include "LamdaCaller.h"
-#include "ValueHelper.h"
 #include <assert.h>
 #include <functional>
 #include <memory>
 #include <vector>
 #include <string>
 #include <unordered_map>
+
+#include "Base.h"
+#include "Caller.h"
+#include "FreeCaller.h"
+#include "LamdaCaller.h"
+#include "ValueHelper.h"
 
 namespace TARDIS::CORE
 {
@@ -92,9 +93,14 @@ namespace TARDIS::CORE
         std::vector<ParamInfo> &m_desData;
         const std::vector<ParamInfo> &m_srcData;
     };
+    
+    template<typename T>
+    class Plugin;
+
 
     class CallerContainer final
     {
+
     public:
         CallerContainer() = default;
         ~CallerContainer();
@@ -155,7 +161,8 @@ namespace TARDIS::CORE
         void addFunctor(const std::string &fnName, CallerInfo *fnData);
         template<typename T>
         friend class Plugin;
-        
-        std::unordered_map<std::string, CallerInfo *> m_slots;
+
+        using CallerSlot = std::unordered_map<std::string, CallerInfo *>;
+        CallerSlot  m_slots;
     };
 }

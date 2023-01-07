@@ -1,11 +1,17 @@
 #include "Plugin.h"
 #include "CallerContainer.h"
+#include "ValueHelper.h"
 
 namespace TARDIS::CORE
 {
     template <typename T>
     Plugin<T>::Plugin(std::string name)
-        : m_logger(nullptr), m_callerContainer(new CallerContainer()), m_self(this), m_pFn(nullptr), m_name(std::move(name)){};
+        : m_logger(nullptr)
+        , m_callerContainer(new CallerContainer())
+        , m_self(this)
+        , m_pFn(nullptr)
+        , m_name(std::move(name))
+    {};
 
     template <typename T>
     Plugin<T>::~Plugin()
@@ -31,10 +37,10 @@ namespace TARDIS::CORE
 
             for (int i = 0; i < callerParams.size(); ++i)
             {
-                param[i].name = {callerParams[i].m_name.c_str(), (unsigned)callerParams[i].m_name.size()};
-                param[i].type = {callerParams[i].m_type.c_str(), (unsigned)callerParams[i].m_type.size()};
+                param[i].name   = {callerParams[i].m_name.c_str(), (unsigned)callerParams[i].m_name.size()};
+                param[i].type   = {callerParams[i].m_type.c_str(), (unsigned)callerParams[i].m_type.size()};
                 param[i].typeId = {callerParams[i].m_typeId.c_str(), (unsigned)callerParams[i].m_typeId.size()};
-                param[i].desc = {callerParams[i].m_desc.c_str(), (unsigned)callerParams[i].m_desc.size()};
+                param[i].desc   = {callerParams[i].m_desc.c_str(), (unsigned)callerParams[i].m_desc.size()};
             }
 
             cb(it.second->name.c_str(), param, callerParams.size());

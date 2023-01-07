@@ -4,6 +4,10 @@ namespace TARDIS::CORE
 {
     void CallerContainer::addFunctor(const std::string& callerName, CallerInfo* callerInfo)
     {
+        if(m_slots.count(callerName))
+        {
+            return;
+        }
         printf("add functor[%s] to container.\r\n", callerName.c_str());
 		m_slots.emplace(callerName, callerInfo);
     }
@@ -22,4 +26,5 @@ namespace TARDIS::CORE
     {
         return m_slots.find(name)->second;
     }
+
 }

@@ -11,6 +11,8 @@
 #       define TARDIS_EXPORT __declspec(dllimport)
 #   endif
 
+typedef const void*   CPVoid;
+
 typedef unsigned int  UInt;
 typedef int           Int;
 
@@ -35,7 +37,16 @@ struct Param
     Str desc;
 };
 
-typedef void (*ParseCallBack)(const char *, Param *, unsigned);
+struct MemoryBuffer
+{
+    // union Buf 
+    // {
+    //     uint64_t number;
+    //     CChar    str;
+    // } buf;
+    CPVoid buf;
+    UInt   len;
+};
 
 struct AssignParam
 {
@@ -45,7 +56,7 @@ struct AssignParam
     {
         if (n > 0)
         {
-            args = new (std::nothrow) Str[n];
+            args = new (std::nothrow) MemoryBuffer[n];
             if (!args)
             {
                 // Todo
@@ -62,7 +73,7 @@ struct AssignParam
         args = nullptr;
     }
 
-    void push(CChar v, UInt l)
+    void push(CPVoid v, UInt l)
     {
         assert(idx < n);
         args[idx].buf = v;
@@ -70,12 +81,17 @@ struct AssignParam
         ++idx;
     }
 
-    void push(Str str)
+    void push(MemoryBuffer memory)
     {
-        push(str.buf, str.len);
+        push(memory.buf, memory.len);
     }
 
-    Str* args;
+    bool isFull()
+    {
+        return idx == n;
+    }
+
+    MemoryBuffer* args;
     int n = 0;
     int idx = 0;
 };
