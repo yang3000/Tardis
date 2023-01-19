@@ -6,13 +6,18 @@
 
 namespace TARDIS::UI
 {
+	PopupWindow::PopupWindow(const std::string &popupId)
+		: m_popupId(popupId)
+	{}
+
 	void PopupWindow::drawImpl()
 	{
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
-		if (ImGui::BeginChild(m_widgetID.c_str(), ImVec2(0, 0), false, window_flags))
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4.0f, 4.0f));
+		if (ImGui::BeginPopup((m_popupId + m_widgetID).c_str()))
 		{
 			drawWidgets();
-			ImGui::EndChild();
+			ImGui::EndPopup();
 		}
+		ImGui::PopStyleVar();
 	}
 }

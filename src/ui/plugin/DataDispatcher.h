@@ -16,6 +16,13 @@ namespace TARDIS::UI
 	class DataDispatcher : public IPlugin
 	{
 	public:
+        DataDispatcher()
+        {}
+        
+        DataDispatcher(T& p_reference) 
+            : m_dataPointer(&p_reference)
+        {}
+
 		void registerReference(T& p_reference)
 		{
 			m_dataPointer = &p_reference;

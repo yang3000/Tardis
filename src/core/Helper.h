@@ -6,20 +6,21 @@
 #include <string>
 #include <random>
 #include <sstream>
+#include <iostream>
 
 namespace TARDIS::CORE
 {
 	class TARDIS_EXPORT Helper
 	{
 	public:
-		// static size_t getThreadId()
-		// {
-		// 	return std::hash<std::thread::id>()(std::this_thread::get_id());
-		// }
-
-		static std::thread::id getThreadId()
+		static inline size_t getThreadId()
 		{
-			return std::this_thread::get_id();
+			return std::hash<std::thread::id>()(std::this_thread::get_id());
+		}
+
+		static inline std::string getThreadIdStr()
+		{
+			return std::to_string(getThreadId());
 		}
 
 		template <typename T>
@@ -36,7 +37,7 @@ namespace TARDIS::CORE
 			return dis(gen);
 		}
 
-		static std::string GenerateHex()
+		static inline std::string GenerateHex()
 		{
 			std::stringstream ss;
 			for (auto i = 0; i < 16; i++)
@@ -65,6 +66,61 @@ namespace TARDIS::CORE
 			printf("\n");
 		}
 
+		template <typename T, size_t N>
+		static bool SplitString(const char *src, const char *split, T(*des)[N])
+		{
+			size_t src_len = strlen(src) + 1;
+			char *s = new char[src_len];
+			memcpy_s(s, src_len, src, src_len);
+			char *c = nullptr;
+			char *p = strtok_s(s, split, &c);
+			while (p != nullptr)
+			{
+				sprintf_s(reinterpret_cast<char *>(des++), strlen(p) + 1, "%s", p);
+				p = strtok_s(nullptr, split, &c);
+			}
+			delete[] s;
+			return true;
+		}
+		
+		static inline bool MinValue(TardisDataType type, void* value)
+		{
+			switch (type)
+			{
+			case TardisDataType_S8:     *(signed char*)        value = (std::numeric_limits<signed char>::min)();        return true;
+			case TardisDataType_U8:     *(unsigned char*)      value = (std::numeric_limits<unsigned char>::min)();      return true;
+			case TardisDataType_S16:    *(signed short*)       value = (std::numeric_limits<signed short>::min)();       return true;
+			case TardisDataType_U16:    *(unsigned short*)     value = (std::numeric_limits<unsigned short>::min)();     return true;
+			case TardisDataType_S32:    *(signed int*)         value = (std::numeric_limits<signed int>::min)();         return true;
+			case TardisDataType_U32:    *(unsigned int*)       value = (std::numeric_limits<unsigned int>::min)();       return true;
+			case TardisDataType_S64:    *(signed long long*)   value = (std::numeric_limits<signed long long>::min)();   return true;
+			case TardisDataType_U64:    *(unsigned long long*) value = (std::numeric_limits<unsigned long long>::min)(); return true;
+			case TardisDataType_Float:  *(float*)              value = (std::numeric_limits<float>::lowest)();           return true;
+			case TardisDataType_Double: *(double*)             value = (std::numeric_limits<double>::lowest)();          return true;
+			default: break;
+			}
+			return false;
+		}
+
+		static inline bool MaxValue(TardisDataType type, void* value)
+		{
+			switch (type)
+			{
+			case TardisDataType_S8:     *(signed char*)        value = (std::numeric_limits<signed char>::max)();        return true;
+			case TardisDataType_U8:     *(unsigned char*)      value = (std::numeric_limits<unsigned char>::max)();      return true;
+			case TardisDataType_S16:    *(signed short*)       value = (std::numeric_limits<signed short>::max)();       return true;
+			case TardisDataType_U16:    *(unsigned short*)     value = (std::numeric_limits<unsigned short>::max)();     return true;
+			case TardisDataType_S32:    *(signed int*)         value = (std::numeric_limits<signed int>::max)();         return true;
+			case TardisDataType_U32:    *(unsigned int*)       value = (std::numeric_limits<unsigned int>::max)();       return true;
+			case TardisDataType_S64:    *(signed long long*)   value = (std::numeric_limits<signed long long>::max)();   return true;
+			case TardisDataType_U64:    *(unsigned long long*) value = (std::numeric_limits<unsigned long long>::max)(); return true;
+			case TardisDataType_Float:  *(float*)              value = (std::numeric_limits<float>::max)();              return true;
+			case TardisDataType_Double: *(double*)             value = (std::numeric_limits<double>::max)();             return true;
+			default: break;
+			}
+			return false;
+		}
+		
 		// static std::string GenerateGuid()
 		// {
 		// 	char buf[64] = { 0 };

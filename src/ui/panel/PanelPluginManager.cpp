@@ -8,7 +8,7 @@
 #include "../layout/Collapsing.h"
 #include "../layout/CollapsingEx.h"
 #include "../layout/TreeNode.h"
-#include "../DataDispatcher.h"
+//#include "../plugin/DataDispatcher.h"
 #include "../plugin/Callback.h"
 #include "../plugin/DDSource.h"
 #include "../widgets/InputText.h"
@@ -51,27 +51,10 @@ namespace TARDIS::UI
     void PanelPluginManager::onAddPlugin(uint64_t pluginId, std::shared_ptr<CORE::PluginContainer> pluginContainer)
     {
         auto header = &m_groupChild->createWidget<CollapsingEx>(pluginContainer->getName());
-        // header->setPopupFn([pluginId, header]()
-        // {
-        //     if (ImGui::MenuItem("Remove"))
-        //     {
-        //         CORE::PluginManager::DestroyPlugin(pluginId);
-        //         header->setClosed();
-        //     }
+        header->addPopupMenu<Button>("Clone").ClickedEvent.addListener([pluginId]{ CORE::PluginManager::ClonePlugin(pluginId); });
+        header->addPopupMenu<Separator>();
+        header->addPopupMenu<Button>("Remove").ClickedEvent.addListener([header]{ header->setClosed(); });
 
-        //     if (ImGui::MenuItem("Clone"))
-        //     {
-        //         CORE::PluginManager::ClonePlugin(pluginId);
-        //     }
-        // });
-
-        // header->CloneEvent.addListener([pluginId](){
-        //         CORE::PluginManager::ClonePlugin(pluginId);
-        // });
-        header->createWidget<Button>("clone").ClickedEvent.addListener([pluginId](){
-                CORE::PluginManager::ClonePlugin(pluginId);
-
-        });
         header->createWidget<TextColored>("Base Information", ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
         header->createWidget<InputText>("Module", pluginContainer->getName());
         header->createWidget<LabelText>("Path", pluginContainer->getFilePath());

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../AWidget.h"
-#include "../DataDispatcher.h"
+#include "../plugin/DataDispatcher.h"
 
 namespace TARDIS::UI
 {

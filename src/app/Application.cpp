@@ -3,6 +3,7 @@
 #include "DirectX12Device.h"
 #include "Application.h"
 #include "WindowEditor.h"
+#include "WindowTestStand.h"
 //#include "WindowsManager.h"
 //#include "PanelsManager.h"
 //#include "DynamicModuleManager.h"
@@ -16,6 +17,7 @@ namespace TARDIS::UI
 		m_renderDevice->initWindow();
 		//m_currentWindow = WindowsManager::Create<CORE::WindowEditor>("Editor");
 		m_currentWindow = new WindowEditor();
+		//m_currentWindow = new WindowTestStand();
 	}
 
 	Application::~Application()

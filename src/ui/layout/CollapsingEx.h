@@ -7,6 +7,8 @@
 #include "../imgui/imgui_internal.h"
 
 #include "Event.h"
+#include "./PopupWindow.h"
+
 
 namespace TARDIS::UI
 {
@@ -17,6 +19,7 @@ namespace TARDIS::UI
 		: m_header(std::move(header))
 		, m_isOpen(isOpen)
 		, m_hasOp(hasOp)
+		, m_popupWin(std::make_shared<PopupWindow>("CollapsingPopuoMenu"))
 		{};
 
         ~CollapsingEx()
@@ -29,13 +32,16 @@ namespace TARDIS::UI
 			m_header = std::move(header);
 		}
 
-		void setPopupFn(std::function<void(void)> fn) { m_popupFn = fn; }
+		template <typename T, typename ... Args>
+		T& addPopupMenu(Args&&... p_args)
+		{
+			return m_popupWin->createWidget<T>(std::forward<Args>(p_args)...);
+		}
 
 		void setClosed() { m_isOpen = false; }
 
      public:
         CORE::Event<> CloseEvent;
-        CORE::Event<> CloneEvent;
 
 	protected:
 		virtual void drawImpl() override;
@@ -48,6 +54,6 @@ namespace TARDIS::UI
 		ImVec2 m_regionMin;
 		ImVec2 m_regionMax;
 
-		std::function<void(void)> m_popupFn;
+		std::shared_ptr<PopupWindow> m_popupWin;
 	};
 }

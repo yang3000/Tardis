@@ -41,6 +41,11 @@ namespace TARDIS::UI
 		return m_parent;
 	}
 
+	const std::string& AWidget::getWidgetId() const
+	{
+		return m_widgetID;
+	}
+
 	AWidget& AWidget::setSameline()
 	{
 		m_lineBreak = false;
@@ -58,7 +63,7 @@ namespace TARDIS::UI
 		if (enabled)
 		{
 			//ImGuiStyle& style = ImGui::GetStyle();
-			//ImGui::PushItemWidth((ImGui::CalcItemWidth() - style.ItemInnerSpacing.x) * m_width);
+			//ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
 			drawImpl();
 			//ImGui::PopItemWidth();
 

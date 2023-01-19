@@ -13,11 +13,18 @@
 
 namespace TARDIS::CORE
 {
-	//class EventArgs;
-	//class Value;
-	//class Db;
 	class Engine;
 	class ICaller;
+
+	struct TestResult
+    {
+        std::string name;
+        std::string desc;
+        std::string lower;
+        std::string value;
+        std::string upper;
+        std::string result;
+    }; 
 
 	class Runner
 	{
@@ -28,7 +35,7 @@ namespace TARDIS::CORE
 
 		//using Getter = std::function<std::string(Db*)>;
 
-        using Output   = std::unordered_map<std::string, std::string>;
+        using Output   = std::unordered_map<unsigned int, std::string>;
 
 		struct Param
 		{
@@ -100,20 +107,23 @@ namespace TARDIS::CORE
 		bool getSkip() const { return m_skip; }
 		bool getPaused() const { return m_paused; }
 		bool getLock() const { return m_lock; }
+		bool getLimitStatus() const { return m_hasLimit; }
 		const std::string& getId()  const { return m_id; }
 		const std::string& getName() const { return m_name; }
 		const uint64_t& getModuleId() const { return m_moduleId; }
 		const std::string& getCallerName() const { return m_caller; }
 
-        void addOutput(const std::string& k, const std::string& v) { m_output.emplace(k, v); }
+        void output(const std::string& v) {
+			std::lock_guard<std::mutex> lock(m_mutexOutput);
+			//auto key = Helper::getThreadId();
+			m_output[Helper::getThreadId()] = v;
+			//m_output.emplace(Helper::getThreadId(), v); 
+		}
 		
-        std::string getOutput(const std::string& k) const 
+        const char* getOutput() const 
 		{ 
-            auto it = m_output.find(k);
-            return (it == m_output.cend()) ? it->second : "";
-           
-           // (it == m_output.cend()) ? it->second : "";
-            //return (auto it = m_output.find(k)) != m_output.cend() ? it->second : "";
+            auto it = m_output.find(Helper::getThreadId());
+            return (it != m_output.end()) ? it->second.c_str() : nullptr;
         } 
 		
 		void addParam(std::shared_ptr<Param> param) { m_params.emplace_back(param); }
@@ -141,6 +151,8 @@ namespace TARDIS::CORE
 
         bool     m_isActived;
 
+		bool     m_hasLimit;
+
 		std::string  m_name;
 		std::string  m_id;
 
@@ -151,6 +163,8 @@ namespace TARDIS::CORE
 		std::string  m_caller;
 
 		std::mutex   m_mutex;
+
+		std::mutex   m_mutexOutput;
 
 		//std::vector<Getter> m_inputs;
 		std::vector<std::shared_ptr<Param>>  m_params;

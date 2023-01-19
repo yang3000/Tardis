@@ -18,6 +18,16 @@ extern int main();
 
 namespace TARDIS::CORE
 {
+    struct TestItemResult
+    {
+        std::string name;
+        std::string desc;
+        std::string lower;
+        std::string value;
+        std::string upper;
+        std::string result;
+    };
+
     class Engine /* : public EventSet */
     {
     public:
@@ -37,9 +47,11 @@ namespace TARDIS::CORE
 
         using RunnerList = std::vector<std::shared_ptr<Runner>>;
 
-        using Plugins = std::unordered_map<uint64_t, IPlugin *>;
+        using Plugins    = std::unordered_map<uint64_t, IPlugin *>;
 
-        using PoolData = std::unordered_map<std::string, std::string>;
+        using PoolData   = std::unordered_map<std::string, std::string>;
+
+        using PoolData   = std::unordered_map<std::string, std::string>;
 
         static inline bool registerRunner(std::shared_ptr<Runner> runner)
         {
@@ -178,6 +190,11 @@ namespace TARDIS::CORE
 
         static RunnerList Cleanup;
 
+        Event<TestItemResult*>  RunnerFinishEvent;
+
+        Event<>                 EngineBeginEvent;
+        Event<>                 EngineEndEvent;
+
     private:
         void run();
         void onStart();
@@ -193,6 +210,8 @@ namespace TARDIS::CORE
         Plugins     m_plugins;
 
         std::weak_ptr<Runner> m_curRunner;
+
+
 
         Engine(const Engine &) = delete;
         Engine &operator=(const Engine &) = delete;
@@ -221,9 +240,9 @@ namespace TARDIS::CORE
             }
         }
 
-        void addOutput(const char *key, const char *value)
+        void output(const char *value)
         {
-            TDS_LOG_INFO("add output->key:{}, value:{}", key, value);
+            TDS_LOG_INFO("add output value:{}",value);
 
             auto engine = m_engine.lock();
             if (!engine)
@@ -239,7 +258,7 @@ namespace TARDIS::CORE
                 return;
             }
 
-            runner->addOutput(key, value);
+            runner->output(value);
         }
 
         void showTestItem(
@@ -250,7 +269,7 @@ namespace TARDIS::CORE
             const char *upper = nullptr,
             const char *desc = nullptr)
         {
-            TDS_LOG_INFO("{}-{}-{}-{}-{}-{}", name, res, value ? value : "", lower ? lower : "", upper ? upper : "", desc ? desc : "");
+            THREAD_LOG_INFO("{}-{}-{}-{}-{}-{}", name, res, value ? value : "", lower ? lower : "", upper ? upper : "", desc ? desc : "");
         }
 
         Communication *getCommunication(uint64_t moduleId)
@@ -264,14 +283,14 @@ namespace TARDIS::CORE
             IPlugin *plugin = engine->getPlugin(moduleId);
             if (!plugin)
             {
-                TDS_LOG_ERROR("can not find plugin:{}", moduleId);
+                THREAD_LOG_ERROR("can not find plugin:{}", moduleId);
                 return nullptr;
             }
 
             Communication *pCommu = dynamic_cast<Communication *>(plugin);
             if (!pCommu)
             {
-                TDS_LOG_ERROR("can not from plugin[{}] to communication", moduleId);
+                THREAD_LOG_ERROR("can not from plugin[{}] to communication", moduleId);
                 return nullptr;
             }
 

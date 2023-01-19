@@ -30,7 +30,7 @@ namespace TARDIS::UI
                 ImGui::SetNextWindowViewport(viewport->ID);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 32.0f));
+               //ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
                 window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -52,7 +52,7 @@ namespace TARDIS::UI
                 // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
                 ImGui::Begin("##dockspace", nullptr, window_flags);
-                ImGui::PopStyleVar(5);
+                ImGui::PopStyleVar(4);
                 // ImGui::PopStyleVar(2);
 
                 // ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8.0f, 8.0f));

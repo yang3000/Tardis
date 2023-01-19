@@ -73,8 +73,9 @@ namespace TARDIS::UI
 				
 
 				drawWidgets();
-				ImGui::End();
 			}
+				ImGui::End();
+
 			        ImGui::PopStyleVar(2);
 
 		}

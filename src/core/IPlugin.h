@@ -27,7 +27,7 @@ namespace TARDIS::CORE
     {
         virtual void addPoolData(const char* key, const char* value) = 0;
 
-        virtual void addOutput(const char* key, const char* value) = 0;
+        virtual void output(const char* value) = 0;
 
         // inside plugin can use this function to show test message on ui.
         virtual void showTestItem(

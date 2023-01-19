@@ -34,9 +34,11 @@ namespace TARDIS::UI
 
 		WidgetContainer* getParent();
 
+		const std::string& getWidgetId() const;
+
 		AWidget& setSameline();
 		
-		AWidget& setWidth(float w);
+		AWidget& setWidth(float w) ;
 
 	protected:
 		virtual void drawImpl() = 0;

@@ -99,16 +99,17 @@ namespace TARDIS::CORE
     }
 
     template <typename T>
-    void Plugin<T>::addOutput(const char *key, const char *value)
+    void Plugin<T>::output(const char *value)
     {
         assert(m_pFn);
-        m_pFn->addOutput(key, value);
+        m_pFn->output(value);
     }
 
     template <typename T>
     void Plugin<T>::showTestItem(const char *name, bool res, const char *value, const char *lower, const char *upper, const char *desc)
     {
         assert(m_pFn);
+        LOG_INFO("{}-{}-{}-{}-{}-{}", name, res, value ? value : "", lower ? lower : "", upper ? upper : "",desc ? desc : "");
         m_pFn->showTestItem(name, res, value, lower, upper, desc);
     }
 

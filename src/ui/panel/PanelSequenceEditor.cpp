@@ -31,15 +31,17 @@ namespace TARDIS::UI
     {
         CORE::SpdLog::DefaultLogger();
 
-        m_engine         = std::make_shared<CORE::Engine>("testEngine");
-        m_global_setup   = std::make_shared<CORE::Engine>("GlobalSetup");
-        m_global_cleanup = std::make_shared<CORE::Engine>("GlobalCleanup");
-        
-        m_plugin_cb      = std::make_shared<CORE::CallBackImpl>(m_engine);
+        m_engineRunTest   = std::make_shared<CORE::Engine>("testEngine");
+        m_engineSetup     = std::make_shared<CORE::Engine>("GlobalSetup");
+        m_engineCleanup   = std::make_shared<CORE::Engine>("GlobalCleanup");
+         
+        m_plugin_cb       = std::make_shared<CORE::CallBackImpl>(m_engineRunTest);
         m_plugin_cb->addPoolData("imei", "yansahjhsdafsd");
-        m_plugin_log     = std::make_shared<CORE::SpdLog>(m_engine->getEngineId(), "tardis_thread1.log");
-
-        m_json_parser    = std::make_shared<CORE::RapidJsonParser>();
+        m_plugin_log      = std::make_shared<CORE::SpdLog>("", "", true);
+ 
+        m_globalPluginLog = std::make_shared<CORE::SpdLog>("Tardis_Log", "tardis_default.log");
+ 
+        m_json_parser     = std::make_shared<CORE::RapidJsonParser>();
 
         m_json_parser->parseJsonFile("sequence.json");
 
@@ -54,32 +56,35 @@ namespace TARDIS::UI
                 {
                     container->create();
                 }
-                m_engine->addPlugin(pluginId, container->get(0));
+                auto newPlugin = container->get(0);
+                m_engineSetup->addPlugin(pluginId, newPlugin);
+                m_engineRunTest->addPlugin(pluginId, newPlugin);
                 return;
             }
 
             // 线程插件->每个Engine创建一个新的插件实例
-            auto plugin = m_engine->addPlugin(pluginId);
+            auto plugin = m_engineRunTest->addPlugin(pluginId);
             if(plugin)
             {
                 plugin->setCallback(m_plugin_cb.get());     
                 plugin->setLogger(m_plugin_log.get());   
                 plugin->loadCallers();
+                m_engineSetup->addPlugin(pluginId, plugin);
             }
         });
 
-        CORE::PluginManager::LoadPluginEvent.addListener([this](uint64_t pluginId, std::shared_ptr<CORE::PluginContainer> container)
-        {
-            // 全局初始化
-            if (container->isGlobal())
-            {
-                if (container->isEmpty())
-                {
-                    container->create();
-                }
-                m_global_setup->addPlugin(pluginId, container->get(0));
-            }
-        });
+        // CORE::PluginManager::LoadPluginEvent.addListener([this](uint64_t pluginId, std::shared_ptr<CORE::PluginContainer> container)
+        // {
+        //     // 全局初始化
+        //     if (container->isGlobal())
+        //     {
+        //         if (container->isEmpty())
+        //         {
+        //             container->create();
+        //         }
+        //         m_engineRunTest->addPlugin(pluginId, container->get(0));
+        //     }
+        // });
 
         CORE::PluginManager::OnDeserialize(m_json_parser);
         CORE::Engine::OnDeserialize(m_json_parser);
@@ -106,7 +111,7 @@ namespace TARDIS::UI
 
         if(ImGui::Button(ICON_FA_PLAY, ImVec2(TEXT_BASE_HEIGHT + 16.0f, TEXT_BASE_HEIGHT + 16.0f)))
         {
-            m_engine->runTask();
+            m_engineRunTest->runTask();
             //RunnerSelectedEvent.invoke()
            // CORE::Engine::runnerList.pop_back();
         }
@@ -167,7 +172,7 @@ namespace TARDIS::UI
             for (int test_n = 0; test_n < setupList.size(); test_n++)
             {
                 ImGui::TableNextRow(ImGuiTableRowFlags_None);
-                ImGui::PushID(test_n);
+                ImGui::PushID(("setup_" + std::to_string(test_n)).c_str());
 
                 // Colors match general test status colors defined below.
                 ImVec4 status_color;
@@ -181,7 +186,7 @@ namespace TARDIS::UI
                 if(ImGui::SmallButton(ICON_FA_PLAY))
                 {
                     TDS_LOG_INFO("runner{} is clicked.", test_n);
-                    std::thread thread([this](int idx){ CORE::Engine::runnerList[idx]->exec(m_engine.get()); }, test_n);
+                    std::thread thread([this](int idx){ CORE::Engine::Setup[idx]->exec(m_engineSetup.get()); }, test_n);
 		            thread.detach();
                 }
 
@@ -279,7 +284,8 @@ namespace TARDIS::UI
             for (int test_n = 0; test_n < runnerList.size(); test_n++)
             {
                 ImGui::TableNextRow(ImGuiTableRowFlags_None);
-                ImGui::PushID(test_n);
+                ImGui::PushID(("runTask_" + std::to_string(test_n)).c_str());
+
 
                 // Colors match general test status colors defined below.
                 ImVec4 status_color;
@@ -293,7 +299,7 @@ namespace TARDIS::UI
                 if(ImGui::SmallButton(ICON_FA_PLAY))
                 {
                     TDS_LOG_INFO("runner{} is clicked.", test_n);
-                    std::thread thread([this](int idx){ CORE::Engine::runnerList[idx]->exec(m_engine.get()); }, test_n);
+                    std::thread thread([this](int idx){ CORE::Engine::runnerList[idx]->exec(m_engineRunTest.get()); }, test_n);
 		            thread.detach();
                 }
 

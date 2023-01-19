@@ -289,7 +289,7 @@ namespace TARDIS::UI
 		//ImGui_ImplWin32_EnableDpiAwareness();
 		wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
 		::RegisterClassEx(&wc);
-		m_hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX12 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
+		m_hwnd = ::CreateWindow(wc.lpszClassName, _T("Tardis"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
 
 
 	}

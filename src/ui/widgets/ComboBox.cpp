@@ -19,17 +19,23 @@ namespace TARDIS::UI
     {
         if(m_choices.size() == 0)
         {
-            if(ImGui::BeginCombo((m_label + m_widgetID).c_str(), "NULL"))
+	        //ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
+
+            if(ImGui::BeginCombo((m_label + m_widgetID).c_str(), ""))
             {
                 ImGui::EndCombo();
             }
+		    //ImGui::PopItemWidth();
+
             return;
+
         }
 
         if (m_choices.find(m_currentChoice) == m_choices.end())
         {
             m_currentChoice = m_choices.begin()->first;
         }
+	        ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
 
         if (ImGui::BeginCombo((m_label + m_widgetID).c_str(), m_choices[m_currentChoice].c_str()))
         {
@@ -50,5 +56,6 @@ namespace TARDIS::UI
 
             ImGui::EndCombo();
         }
+        ImGui::PopItemWidth();
     }
 }

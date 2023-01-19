@@ -161,8 +161,10 @@ bool HonorCust4Dongle::loadCallers()
 
 void HonorCust4Dongle::TestCommunication(uint64_t id, std::string cmd)
 {
-    LOG_ERROR("communication test, input id:{}", id);
-    LOG_ERROR("communication test, input cmd:{}", cmd);
+    LOG_INFO("communication test, input id:{}", id);
+    LOG_INFO("communication test, input cmd:{}", cmd);
+
+    output(id);
     auto commu = getCommunication(id);
     if (commu)
     {
@@ -219,6 +221,8 @@ bool HonorCust4Dongle::Test1(const char *imei)
 bool HonorCust4Dongle::Test2()
 {
     LOG_INFO("running Test2...");
+    output("Test2");
+    output("Test2...");
     return true;
 
 }

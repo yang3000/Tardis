@@ -14,12 +14,13 @@ namespace TARDIS::UI
     // ImGuiStyleVar_IndentSpacing,       // float     IndentSpacing
     // ImGuiStyleVar_CellPadding,         // ImVec2    CellPadding
 
-		ImGuiWindowFlags window_flags =  ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove;
+		ImGuiWindowFlags window_flags =  ImGuiWindowFlags_AlwaysVerticalScrollbar /* | ImGuiWindowFlags_AlwaysAutoResize */ | ImGuiWindowFlags_NoMove;
 		if(ImGui::BeginChild(m_widgetID.c_str(), ImVec2(0, 0), false, window_flags))
 		{
 			drawWidgets();
-		ImGui::EndChild();
 		}
+		ImGui::EndChild();
+
 		//ImGui::BeginChildFrame(ImGui::GetID(m_widgetID.c_str()), ImVec2(0, 0), window_flags);
 		// drawWidgets();
 		// ImGui::EndChild();

@@ -52,22 +52,10 @@ namespace TARDIS::UI
 				ImGui::SameLine(contentRegionAvailable.x - lineHeight);
 				if (ImGui::Button(ICON_FA_PLUS, ImVec2{lineHeight, lineHeight}))
 				{
-					ImGui::OpenPopup("PopupMenu");
+					ImGui::OpenPopup(("CollapsingPopuoMenu" + m_popupWin->getWidgetId()).c_str());
 				}
 
-				if (ImGui::BeginPopup("PopupMenu"))
-				{
-					// if (m_popupFn)
-					// {
-					// 	m_popupFn();
-					// }
-					if (ImGui::MenuItem("Clone"))
-					{
-						CloneEvent.invoke();
-					}
-					
-					ImGui::EndPopup();
-				}
+				m_popupWin->draw();
 			}
 
 			if (open)

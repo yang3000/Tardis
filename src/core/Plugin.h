@@ -51,7 +51,10 @@ namespace TARDIS::CORE
 
         void addPoolData(const char* key, const char* value);
 
-        void addOutput(const char *key, const char *value);
+        void output(const char *value);
+
+        template<typename DataType>
+        void output(DataType value) { output(ValueHelper<DataType>::toString(value).c_str()); }
 
         void showTestItem(const char* name, bool res, const char* value, const char* lower, const char* upper, const char* desc);
 

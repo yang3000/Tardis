@@ -36,8 +36,9 @@ namespace TARDIS::CORE
 
 	void Engine::onStart()
 	{
+		EngineBeginEvent.invoke();
 		m_running = true;
-
+		SpdLog::AddLogger(Helper::getThreadIdStr(), "tardis_thread1_inner.log");
 		// std::string logFile = m_db.getValue<std::string>("logfile");
 		// logFile = logFile.empty() ? std::to_string(m_engineId) + "_log.txt" : logFile;
 
@@ -58,6 +59,7 @@ namespace TARDIS::CORE
 		// Log::DropLogger(std::to_string(m_engineId));
 		// m_thread_logger.reset();
 		m_running = false;
+		EngineEndEvent.invoke();
 	}
 
 	void Engine::runTask()
@@ -74,6 +76,9 @@ namespace TARDIS::CORE
 
 	void Engine::run()
 	{
+		onStart();
+		
+
 		if (runnerList.size() == 0) {
 			// RunnerEventArgs event_warn("no node");
 			// fireEvent(EventRunnerWarn, event_warn);
@@ -81,9 +86,9 @@ namespace TARDIS::CORE
 			return;
 		}
 
-        onStart();
+        
 
-		for (int i = 0; i < runnerList.size(); i++)
+		for (int i = 0; i < runnerList.size(); ++i)
 		{
 			if (m_stop)
 			{
@@ -107,6 +112,16 @@ namespace TARDIS::CORE
 
 			// call it.
 			bool res = runnerList[i]->exec(this);
+			auto result = new TestItemResult();
+			result->name = runnerList[i]->getName();
+			result->desc = "";
+			result->lower = "";
+			result->value = "";
+			result->upper = "";
+			result->result = res ? "true" : "false";
+
+			RunnerFinishEvent.invoke(result);
+			delete result;
 			if (!res) {
 				// RunnerEventArgs event_error(m_curRunner, std::string("execute node[") + m_curRunner->m_name + "] fail");
 				// fireEvent(EventRunnerError, event_error);
@@ -131,7 +146,7 @@ namespace TARDIS::CORE
         auto it = m_poolData.find(key);
         if (it == m_poolData.cend())
         {
-			TDS_LOG_WARN("can not find data from pool by key[{}]", key);
+			THREAD_LOG_WARN("can not find data from pool by key[{}]", key);
         	return str;
         }
 		str.buf = it->second.c_str();

@@ -12,24 +12,28 @@ namespace TARDIS::CORE
     class CallBackImpl;
     class SpdLog;
     class RapidJsonParser;
+
+    struct TestItemResult;
 }
 namespace TARDIS::UI
 {
-    class PanelSequenceEditor : public APanel
+
+
+    class PanelTestStand : public APanel
     {
     public:
-        PanelSequenceEditor();
-        ~PanelSequenceEditor();
+        PanelTestStand();
+        ~PanelTestStand();
 
-        static void TestStatusButton(const char *id, const ImVec4 &color, bool running);
-
-     public:
-        CORE::Event<std::weak_ptr<CORE::Runner>> RunnerSelectedEvent;
+        void onAddTestResult(CORE::TestItemResult* result);
 
     protected:
         void drawImpl() override;
 
     private:
+
+        bool                                   m_engineIsRunning;
+        std::vector<std::shared_ptr<CORE::TestItemResult>> m_testItemList;
         //std::unique_ptr<CORE::Engine> m_engine;
         std::shared_ptr<CORE::Engine>          m_engineRunTest;
 

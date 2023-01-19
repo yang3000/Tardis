@@ -7,13 +7,17 @@
 #include "CheckBox.h"
 #include "ComboBox.h"
 #include "DragSingleScalar.h"
+#include "DragScalarRange.h"
 #include "InputText.h"
 #include "Spacing.h"
+#include "Separator.h"
 #include "HelperMarker.h"
-#include "../DataDispatcher.h"
+#include "../plugin/DataDispatcher.h"
 #include "PluginManager.h"
 #include "ValueHelper.h"
 #include "../layout/GroupSameline.h"
+#include "../layout/Group.h"
+#include "../layout/GroupChild.h"
 #include "../plugin/Callback.h"
 
 namespace TARDIS::UI
@@ -28,10 +32,55 @@ namespace TARDIS::UI
             .TextChangedEvent
             .addListener([tRunner, this](std::string name){ tRunner->setName(name); NameChangedEvent.invoke(name);});
 
-            createWidget<CheckBox>("Skip",   tRunner->getSkip()).setSameline();
-            createWidget<CheckBox>("Lock",   tRunner->getLock()).setSameline();
+            createWidget<CheckBox>("Skip",   tRunner->getSkip());
+            createWidget<CheckBox>("Lock",   tRunner->getLock());
             createWidget<CheckBox>("Paused", tRunner->getPaused());
+
+            //createWidget<CheckBox>("Limit").addPlugin<DataDispatcher<bool>>();
+            createWidget<Separator>();
+            static Group*    pAWidgetLimitGroup = nullptr;
+            //static DragScalarRange*  pAWidgetLimit         = nullptr;
+            createWidget<CheckBox>("Limit", tRunner->getLimitStatus()).ValueChangedEvent.addListener([](bool isChecked)
+            {
+                //if(pAWidgetLimit)
+                {
+                    pAWidgetLimitGroup->enabled = isChecked;
+                }
+            });
+            pAWidgetLimitGroup = &createWidget<Group>();
+            pAWidgetLimitGroup->createWidget<ComboBox>("", 11).setWidth(0.5f);
+            pAWidgetLimitGroup->createWidget<DragSingleScalar>("Speed", "1.0", ImGuiDataType_Float, "0.01,100.0", "%.5f", 0.01f).setWidth(0.5f);
+            pAWidgetLimitGroup->createWidget<DragScalarRange>("Range", "123,456", "0,0", ImGuiDataType_Float);
+            pAWidgetLimitGroup->enabled = tRunner->getLimitStatus();
+            createWidget<Separator>();
+
+            // pAWidgetDrapSpeed->ChangedEvent.addListener([](std::string value){
+            //     pAWidgetLimit
+            // });
+
+            //pAWidgetLimit = &createWidget<DragScalarRange>("Float", "123,456", "0,0", ImGuiDataType_Float);
+
+
+
+            createWidget<DragScalarRange>("S8", "3,4560", "100,1000", ImGuiDataType_S8);
+            createWidget<DragScalarRange>("U8", "3,4560", "100,1000", ImGuiDataType_U8);
+
+            createWidget<DragScalarRange>("S16", "300,4560", "100,1000", ImGuiDataType_S16);
+            createWidget<DragScalarRange>("U16", "3,4560", "100,1000", ImGuiDataType_U16);
+
+            createWidget<DragScalarRange>("S32", "3,4560", "100,1000", ImGuiDataType_S32);
+            createWidget<DragScalarRange>("U32", "3,4560", "100,1000", ImGuiDataType_U32);
+
+            createWidget<DragScalarRange>("S64", "3,4560", "100,1000", ImGuiDataType_S64);
+            createWidget<DragScalarRange>("U64", "3,4560", "100,1000", ImGuiDataType_U64);
+            createWidget<DragScalarRange>("Float", "123,456", "100,1000", ImGuiDataType_Float);
+            createWidget<DragScalarRange>("Double", "123,456", "100,1000", ImGuiDataType_Double);
+            auto& groupSameline = createWidget<GroupSameline>();
+            groupSameline.createWidget<DragScalarRange>("", "3,4560", "100,1000", ImGuiDataType_S64).setWidth(0.5f);
+            groupSameline.createWidget<DragScalarRange>("", "3,4560", "100,1000", ImGuiDataType_S64).setWidth(0.5f);
+            createWidget<ComboBox>("rtyrty").setWidth(0.3f);
             createWidget<Text>(tRunner->getCallerName());
+
             auto params = tRunner->getParams();
             for(auto& p : params)
             {
@@ -49,23 +98,22 @@ namespace TARDIS::UI
                 case TardisDataType_Double:
                 case TardisDataType_Bool:
                 {
-                    auto& groupSameline = createWidget<GroupSameline>();
+                    // auto& groupSameline = createWidget<GroupSameline>();
+                    // groupSameline
+                    // .createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
+                    // //.setSameline()
+                    // .setWidth(0.7f)
+                    // .addPlugin<DataDispatcher<std::string>>()
+                    // .registerReference(p->m_value);
+                    // groupSameline
+                    // .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
+                    // .setSameline()
+                    // .setWidth(0.3f)
+                    // .addPlugin<DataDispatcher<std::string>>()
+                    // .registerReference(p->m_get);
+                    // createWidget<HelperMarker>(p->m_desc);
 
-                    groupSameline
-                    .createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
-                    //.setSameline()
-                    .setWidth(0.7f)
-                    .addPlugin<DataDispatcher<std::string>>()
-                    .registerReference(p->m_value);
-
-                    groupSameline
-                    .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
-                    .setSameline()
-                    .setWidth(0.3f)
-                    .addPlugin<DataDispatcher<std::string>>()
-                    .registerReference(p->m_get);
-
-                    createWidget<HelperMarker>(p->m_desc);
+                    createNumericalWidget(p);
                     break;
                 }
                 case TardisDataType_String:
@@ -75,14 +123,14 @@ namespace TARDIS::UI
                     groupSameline
                     .createWidget<InputText>("", p->m_value.c_str())
                     //.setSameline()
-                    .setWidth(0.7f)
+                    .setWidth(0.5f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_value);
 
                     groupSameline
                     .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
                     .setSameline()
-                    .setWidth(0.3f)
+                    .setWidth(0.5f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_get);
 
@@ -92,7 +140,7 @@ namespace TARDIS::UI
                 case TardisDataType_Communication:
                 {
                     auto& comboBox = createWidget<ComboBox>(p->m_name.c_str(), TARDIS::CORE::ValueHelper<uint64_t>::from(p->m_value));
-                    comboBox.setWidth(0.7f);
+                   // comboBox.setWidth(0.7f);
                     comboBox.ValueChangedEvent.addListener([p](uint64_t value) { p->m_value = TARDIS::CORE::ValueHelper<uint64_t>::toString(value); });
                     auto& plugins  = TARDIS::CORE::PluginManager::GetPlugins();
                     for(const auto&[id, plugin] : plugins)
@@ -122,6 +170,27 @@ namespace TARDIS::UI
         //  createWidget<DragSingleScalar>("TestDrag ULLong", "12", ImGuiDataType_U64);
         //  createWidget<DragSingleScalar>("TestDrag Float", "12", ImGuiDataType_Float);
         //  createWidget<DragSingleScalar>("TestDrag Double", "12", ImGuiDataType_Double);
+    }
+
+    bool WidgetRunnerProperty::createNumericalWidget(std::shared_ptr<CORE::Runner::Param> param)
+    {
+        auto &groupSameline = createWidget<GroupSameline>();
+
+        groupSameline
+            .createWidget<DragSingleScalar>("", param->m_value, param->m_typeId)
+            .setWidth(0.7f)
+            .addPlugin<DataDispatcher<std::string>>()
+            .registerReference(param->m_value);
+
+        groupSameline
+            .createWidget<InputText>(param->m_name.c_str(), param->m_get.c_str())
+            .setSameline()
+            .setWidth(0.3f)
+            .addPlugin<DataDispatcher<std::string>>()
+            .registerReference(param->m_get);
+
+        createWidget<HelperMarker>(param->m_desc);
+        return true;
     }
 
     void WidgetRunnerProperty::drawImpl()

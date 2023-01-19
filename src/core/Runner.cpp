@@ -17,6 +17,7 @@ namespace TARDIS::CORE
         , m_lock(lock)
         , m_skip(skip)
         , m_paused(pause)
+        , m_hasLimit(false)
         , m_times(times)
 	{};
 
@@ -26,6 +27,7 @@ namespace TARDIS::CORE
         , m_lock(false)
         , m_skip(false)
         , m_paused(false)
+        , m_hasLimit(false)
         , m_times(1)
 	{};
 
@@ -56,32 +58,32 @@ namespace TARDIS::CORE
 	bool Runner::exec(Engine* engine)
 	{
         {
-            LOG_INFO(engine->getEngineId(), "--------------------------------");
-            LOG_INFO(engine->getEngineId(), "start run:{}", m_name);
+            THREAD_LOG_TRACE("--------------------------------");
+            THREAD_LOG_TRACE("start run:{}", m_name);
         }
 
         // find plugin
         auto it = engine->m_plugins.find(m_moduleId);
         if (it == engine->m_plugins.end())
         {
-            LOG_ERROR(engine->getEngineId(), "can not find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
+            THREAD_LOG_ERROR("can not find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
             return false;
         }
 
         {
-            LOG_INFO(engine->getEngineId(), "find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
+            THREAD_LOG_INFO("find module:{}[{}]", PluginManager::GetPluginName(m_moduleId), m_moduleId);
         }
 
         // find caller
         ICaller *pCaller = it->second->getCaller(m_caller.c_str());
         if (!pCaller)
         {
-            LOG_ERROR(engine->getEngineId(), "can not find caller:{}", m_caller);
+            THREAD_LOG_ERROR("can not find caller:{}", m_caller);
             return false;
         }
 
         {
-            LOG_INFO(engine->getEngineId(), "find caller:{}", m_caller);
+            THREAD_LOG_INFO("find caller:{}", m_caller);
         }
 
         // initialize params
@@ -101,13 +103,13 @@ namespace TARDIS::CORE
                     auto plugin = engine->getPlugin(pluginId);
                     if(!plugin)
                     {
-                        LOG_ERROR(engine->getEngineId(), "can not find communication plugin, id:{}", pluginId);
+                        THREAD_LOG_ERROR("can not find communication plugin, id:{}", pluginId);
                         return false;
                     }
                     auto commu = dynamic_cast<Communication *>(plugin);
                     if(!commu)
                     {
-                        LOG_ERROR(engine->getEngineId(), "can not turn plugin to communication");
+                        THREAD_LOG_ERROR("can not turn plugin to communication");
                         return false;
                     }
                     params.push(commu, sizeof(void *));
@@ -127,6 +129,8 @@ namespace TARDIS::CORE
 			{
 				return false;
 			}
+            auto out = getOutput();
+            THREAD_LOG_INFO("get output value from runner:{}", out ? out : "");
 		}
 		return true;
 	}

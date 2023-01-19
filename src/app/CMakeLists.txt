@@ -16,6 +16,7 @@ set( CORE_SOURCE_FILES
     ../ui/imgui/imgui_impl_dx12.cpp
     ../ui/DirectX12Device.cpp
     ../ui/WindowEditor.cpp
+    ../ui/WindowTestStand.cpp
     ../ui/Canvas.cpp
     ../ui/PanelsManager.cpp
     ../ui/panel/APanel.cpp
@@ -28,6 +29,9 @@ set( CORE_SOURCE_FILES
     ../ui/layout/GroupSameline.cpp
     ../ui/layout/GroupChild.cpp
     ../ui/layout/TreeNode.cpp
+    ../ui/layout/PopupWindow.cpp
+    ../ui/layout/Group.cpp
+    
     ../ui/widgets/WidgetRunnerProperty.cpp
     ../ui/widgets/CheckBox.cpp
     ../ui/widgets/Text.cpp
@@ -40,11 +44,15 @@ set( CORE_SOURCE_FILES
     ../ui/widgets/ComboBox.cpp
     ../ui/widgets/HelperMarker.cpp
     ../ui/widgets/DragSingleScalar.cpp
+    ../ui/widgets/DragScalarRange.cpp
     ../ui/widgets/Caller.cpp
     ../ui/widgets/NewPlugin.cpp
+    ../ui/widgets/TestItemList.cpp
+    
     ../ui/panel/PanelWindow.cpp
     ../ui/panel/PanelMenuBar.cpp
     ../ui/panel/PanelSequenceEditor.cpp
+    ../ui/panel/PanelTestStand.cpp
     ../ui/panel/PanelProperties.cpp
     ../ui/panel/PanelPluginManager.cpp
 )

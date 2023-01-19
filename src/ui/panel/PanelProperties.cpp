@@ -9,7 +9,7 @@
 #include "../layout/CollapsingEx.h"
 #include "../layout/GroupChild.h"
 #include "../widgets/WidgetRunnerProperty.h"
-#include "../DataDispatcher.h"
+//#include "../plugin/DataDispatcher.h"
 #include "../plugin/Callback.h"
 
 namespace TARDIS::UI
