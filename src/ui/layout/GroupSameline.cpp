@@ -2,7 +2,7 @@
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
-
+#include <memory>
 
 namespace TARDIS::UI
 {
@@ -20,7 +20,7 @@ namespace TARDIS::UI
 
 		for(int i = 0; i < count; ++i)
 		{
-			const float w_item  = IM_FLOOR(w_total * m_widgets[i]->width);
+			const float w_item  = IM_FLOOR(w_total * m_widgets[i]->getWidth());
 			ImGui::PushItemWidth(i < count - 1 ? w_item : w_total - w_sum);
 			m_widgets[i]->draw();
 			ImGui::PopItemWidth();

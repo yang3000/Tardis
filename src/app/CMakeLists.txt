@@ -27,6 +27,7 @@ set( CORE_SOURCE_FILES
     ../ui/layout/Collapsing.cpp
     ../ui/layout/CollapsingEx.cpp
     ../ui/layout/GroupSameline.cpp
+    ../ui/layout/GroupSamelineEx.cpp
     ../ui/layout/GroupChild.cpp
     ../ui/layout/TreeNode.cpp
     ../ui/layout/PopupWindow.cpp
@@ -50,6 +51,7 @@ set( CORE_SOURCE_FILES
     ../ui/widgets/TestItemList.cpp
     
     ../ui/panel/PanelWindow.cpp
+    ../ui/panel/PanelDemo.cpp
     ../ui/panel/PanelMenuBar.cpp
     ../ui/panel/PanelSequenceEditor.cpp
     ../ui/panel/PanelTestStand.cpp

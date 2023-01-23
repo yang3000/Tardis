@@ -333,8 +333,8 @@ namespace TARDIS::UI
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
 		// Setup Dear ImGui style
-		// ImGui::StyleColorsDark();
-		ImGui::StyleColorsLight();
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsLight();
 		//ImGui::StyleColorsClassic();
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
@@ -361,15 +361,15 @@ namespace TARDIS::UI
 		// - Read 'docs/FONTS.md' for more instructions and details.
 		// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
 		//io.Fonts->AddFontDefault();
-		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/Roboto-Medium.ttf", 16.0f);
+		io.Fonts->AddFontFromFileTTF("../../fonts/Roboto-Medium.ttf", 16.0f);
 
 		ImFontConfig config;
 		config.MergeMode = true;
 		//config.GlyphMinAdvanceX = 16.0f;
 		//config.GlyphMaxAdvanceX = 24.0f;
 		static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-regular-400.ttf", 12, &config, icon_ranges);
-		io.Fonts->AddFontFromFileTTF("C:/Users/yangh/Desktop/Tardis/bin/Debug/fonts/fa-solid-900.ttf", 12, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("../../fonts/fa-regular-400.ttf", 12, &config, icon_ranges);
+		io.Fonts->AddFontFromFileTTF("../../fonts/fa-solid-900.ttf", 12, &config, icon_ranges);
 		//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 		//IM_ASSERT(font != NULL);
 

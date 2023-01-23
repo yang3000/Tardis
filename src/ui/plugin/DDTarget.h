@@ -28,7 +28,7 @@ namespace TARDIS::UI
 				m_isHovered = true;
 
 				ImGuiDragDropFlags target_flags = 0;
-				target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+				//target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
 
                 auto min = ImGui::GetItemRectMin();
                 auto max = ImGui::GetItemRectMax();

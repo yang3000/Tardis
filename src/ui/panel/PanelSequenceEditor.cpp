@@ -100,7 +100,7 @@ namespace TARDIS::UI
 
     PanelSequenceEditor::~PanelSequenceEditor()
     {
-        m_json_parser->saveJsonToFile("F:\\C_C++\\TardisProject\\Tardis\\build\\test\\Debug\\json_demo.json");
+        m_json_parser->saveJsonToFile("D:\\Debug\\json_demo.json");
         CORE::PluginManager::DestroyAllPlugins();
     }
 
@@ -212,7 +212,7 @@ namespace TARDIS::UI
                 {
                     dragIdx = test_n;
                     ImGuiDragDropFlags target_flags = 0;
-                    target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+                   target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
                     ImGui::GetCurrentWindow()->DrawList->AddLine(min, ImVec2(max.x, min.y), IM_COL32(0, 255, 0, 255));
 
                     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("AddTestItem", target_flags))
@@ -241,7 +241,7 @@ namespace TARDIS::UI
             if (dragIdx == -1 && ImGui::BeginDragDropTarget())
             {
                 ImGuiDragDropFlags target_flags = 0;
-                target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+               target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
                 auto min = table->WorkRect.Min;
                 auto max = table->WorkRect.Max;
                ImGui::GetForegroundDrawList()->AddLine(ImVec2(min.x, max.y - 3.0f), ImVec2(max.x, max.y - 3.0f), IM_COL32(0, 255, 0, 255));
@@ -327,8 +327,15 @@ namespace TARDIS::UI
                 {
                     dragIdx = test_n;
                     ImGuiDragDropFlags target_flags = 0;
+                    auto curContext = ImGui::GetCurrentContext();
                     target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
-                    ImGui::GetCurrentWindow()->DrawList->AddLine(min, ImVec2(max.x, min.y), IM_COL32(0, 255, 0, 255));
+                    if(curContext->DragDropAcceptIdPrev == curContext->DragDropTargetId)
+                    {
+                        ImRect r = curContext->DragDropTargetRect;
+                        ImGui::GetCurrentWindow()->DrawList->AddLine(r.Min, ImVec2(r.Max.x, r.Min.y), ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
+                        //ImGui::GetCurrentWindow()->DrawList->AddLine(min, ImVec2(max.x, min.y), IM_COL32(0, 255, 0, 255));
+
+                    }
 
                     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("AddTestItem", target_flags))
                     {
@@ -392,9 +399,15 @@ namespace TARDIS::UI
         if (dragIdx == -1 && ImGui::BeginDragDropTarget())
         {
             ImGuiDragDropFlags target_flags = 0;
-            target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+             auto curContext = ImGui::GetCurrentContext();
+                    target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+                    if(curContext->DragDropAcceptIdPrev == curContext->DragDropTargetId)
+                    {
+                        ImRect r = curContext->DragDropTargetRect;
+                        ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(r.Min.x, r.Max.y) - ImVec2(0.0f,8.5f), r.Max - ImVec2(0.0f,8.5f),  ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
+                        //ImGui::GetCurrentWindow()->DrawList->AddLine(min, ImVec2(max.x, min.y), IM_COL32(0, 255, 0, 255));
 
-            ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(lastItemMin.x, lastItemMax.y), lastItemMax, IM_COL32(0, 255, 0, 255));
+                    }
 
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("AddTestItem", target_flags))
             {

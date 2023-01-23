@@ -40,11 +40,7 @@ namespace TARDIS::UI
 			}
 
 			open = ImGui::TreeNodeEx("", treeNodeFlags, m_header.c_str());
-
-
-			
-
-
+			// 
 			// ImGui::PopStyleVar();
 
 			if (m_hasOp)
@@ -60,10 +56,10 @@ namespace TARDIS::UI
 
 			if (open)
 			{
-				//ImGuiStyle& style = ImGui::GetStyle();
-				//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f });
+				// ImGuiStyle& style = ImGui::GetStyle();
+				// ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f });
 				// ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);
-				// //ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, style.FrameBorderSize);
+				// ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, style.FrameBorderSize);
 				// ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
 				// bool ret = ImGui::BeginChild(ImGui::GetID(m_header.c_str()), ImVec2(0,0), false, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
 				// ImGui::PopStyleVar(2);
@@ -71,8 +67,9 @@ namespace TARDIS::UI
 
 				drawWidgets();
 				//ImGui::PopStyleColor();
-				// ImGui::EndChild();
+				//ImGui::EndChild();
 				m_regionMax = ImGui::GetCurrentContext()->LastItemData.Rect.Max;
+				
 			    m_regionMax.y += ImGui::GetFrameHeight();
 				ImGui::TreePop();
 			}

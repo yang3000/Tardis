@@ -1,10 +1,11 @@
 #pragma once
 
-#include <vector>
-
 #include "PanelWindow.h"
 #include "../layout/Collapsing.h"
 #include "../layout/GroupChild.h"
+
+#include <memory>
+#include <vector>
 
 namespace TARDIS::CORE
 {

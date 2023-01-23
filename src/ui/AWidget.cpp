@@ -54,16 +54,20 @@ namespace TARDIS::UI
 		
 	AWidget& AWidget::setWidth(float w)
 	{
-		width = w;
+		m_width = w;
 		return *this;
+	}
+
+	const float& AWidget::getWidth() const
+	{
+		return m_width;
 	}
 
 	void AWidget::draw()
 	{
 		if (enabled)
 		{
-			//ImGuiStyle& style = ImGui::GetStyle();
-			//ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
+			//ImGui::PushItemWidth(ImGui::CalcItemWidth() * (m_width <= 0.0f ? 1.0f : m_width));
 			drawImpl();
 			//ImGui::PopItemWidth();
 

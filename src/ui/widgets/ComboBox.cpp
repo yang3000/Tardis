@@ -35,7 +35,7 @@ namespace TARDIS::UI
         {
             m_currentChoice = m_choices.begin()->first;
         }
-	        ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
+	        //ImGui::PushItemWidth(ImGui::CalcItemWidth() * width);
 
         if (ImGui::BeginCombo((m_label + m_widgetID).c_str(), m_choices[m_currentChoice].c_str()))
         {
@@ -56,6 +56,6 @@ namespace TARDIS::UI
 
             ImGui::EndCombo();
         }
-        ImGui::PopItemWidth();
+        //ImGui::PopItemWidth();
     }
 }

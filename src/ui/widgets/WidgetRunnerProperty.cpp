@@ -16,6 +16,7 @@
 #include "PluginManager.h"
 #include "ValueHelper.h"
 #include "../layout/GroupSameline.h"
+#include "../layout/GroupSamelineEx.h"
 #include "../layout/Group.h"
 #include "../layout/GroupChild.h"
 #include "../plugin/Callback.h"
@@ -28,31 +29,34 @@ namespace TARDIS::UI
         auto tRunner = m_runner.lock();
         if(tRunner)
         {
-            createWidget<InputText>("Name",  tRunner->getName())
+            createWidget<InputText>("cmd",  tRunner->getName())
             .TextChangedEvent
             .addListener([tRunner, this](std::string name){ tRunner->setName(name); NameChangedEvent.invoke(name);});
 
-            createWidget<CheckBox>("Skip",   tRunner->getSkip());
-            createWidget<CheckBox>("Lock",   tRunner->getLock());
-            createWidget<CheckBox>("Paused", tRunner->getPaused());
+            auto& runnerProperty = createWidget<GroupSamelineEx>("");
 
+            runnerProperty.createWidget<CheckBox>("Skip",   tRunner->getSkip());
+            runnerProperty.createWidget<CheckBox>("Lock",   tRunner->getLock());
+            runnerProperty.createWidget<CheckBox>("Paused", tRunner->getPaused());
+            auto limitWidget = &runnerProperty.createWidget<CheckBox>("Limit", tRunner->getLimitStatus());
             //createWidget<CheckBox>("Limit").addPlugin<DataDispatcher<bool>>();
-            createWidget<Separator>();
-            static Group*    pAWidgetLimitGroup = nullptr;
-            //static DragScalarRange*  pAWidgetLimit         = nullptr;
-            createWidget<CheckBox>("Limit", tRunner->getLimitStatus()).ValueChangedEvent.addListener([](bool isChecked)
+            //createWidget<Separator>();
+            
+            auto pAWidgetLimitGroup = &createWidget<Group>();
+            limitWidget->ValueChangedEvent.addListener([pAWidgetLimitGroup] (bool isChecked)
             {
-                //if(pAWidgetLimit)
                 {
                     pAWidgetLimitGroup->enabled = isChecked;
                 }
             });
-            pAWidgetLimitGroup = &createWidget<Group>();
+            pAWidgetLimitGroup->createWidget<Separator>();
             pAWidgetLimitGroup->createWidget<ComboBox>("", 11).setWidth(0.5f);
             pAWidgetLimitGroup->createWidget<DragSingleScalar>("Speed", "1.0", ImGuiDataType_Float, "0.01,100.0", "%.5f", 0.01f).setWidth(0.5f);
             pAWidgetLimitGroup->createWidget<DragScalarRange>("Range", "123,456", "0,0", ImGuiDataType_Float);
             pAWidgetLimitGroup->enabled = tRunner->getLimitStatus();
             createWidget<Separator>();
+
+
 
             // pAWidgetDrapSpeed->ChangedEvent.addListener([](std::string value){
             //     pAWidgetLimit
@@ -60,25 +64,6 @@ namespace TARDIS::UI
 
             //pAWidgetLimit = &createWidget<DragScalarRange>("Float", "123,456", "0,0", ImGuiDataType_Float);
 
-
-
-            createWidget<DragScalarRange>("S8", "3,4560", "100,1000", ImGuiDataType_S8);
-            createWidget<DragScalarRange>("U8", "3,4560", "100,1000", ImGuiDataType_U8);
-
-            createWidget<DragScalarRange>("S16", "300,4560", "100,1000", ImGuiDataType_S16);
-            createWidget<DragScalarRange>("U16", "3,4560", "100,1000", ImGuiDataType_U16);
-
-            createWidget<DragScalarRange>("S32", "3,4560", "100,1000", ImGuiDataType_S32);
-            createWidget<DragScalarRange>("U32", "3,4560", "100,1000", ImGuiDataType_U32);
-
-            createWidget<DragScalarRange>("S64", "3,4560", "100,1000", ImGuiDataType_S64);
-            createWidget<DragScalarRange>("U64", "3,4560", "100,1000", ImGuiDataType_U64);
-            createWidget<DragScalarRange>("Float", "123,456", "100,1000", ImGuiDataType_Float);
-            createWidget<DragScalarRange>("Double", "123,456", "100,1000", ImGuiDataType_Double);
-            auto& groupSameline = createWidget<GroupSameline>();
-            groupSameline.createWidget<DragScalarRange>("", "3,4560", "100,1000", ImGuiDataType_S64).setWidth(0.5f);
-            groupSameline.createWidget<DragScalarRange>("", "3,4560", "100,1000", ImGuiDataType_S64).setWidth(0.5f);
-            createWidget<ComboBox>("rtyrty").setWidth(0.3f);
             createWidget<Text>(tRunner->getCallerName());
 
             auto params = tRunner->getParams();
@@ -118,22 +103,23 @@ namespace TARDIS::UI
                 }
                 case TardisDataType_String:
                 {
-                    auto& groupSameline = createWidget<GroupSameline>();
+                    auto& groupSameline = createWidget<GroupSamelineEx>(p->m_name, false);
 
                     groupSameline
                     .createWidget<InputText>("", p->m_value.c_str())
                     //.setSameline()
-                    .setWidth(0.5f)
+                    .setWidth(0.75f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_value);
 
                     groupSameline
-                    .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
+                    .createWidget<InputText>("", p->m_get.c_str())
                     .setSameline()
-                    .setWidth(0.5f)
+                    .setWidth(0.25f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_get);
 
+                    groupSameline.setSameline();
                     createWidget<HelperMarker>(p->m_desc);
                     break;
                 }
@@ -174,20 +160,22 @@ namespace TARDIS::UI
 
     bool WidgetRunnerProperty::createNumericalWidget(std::shared_ptr<CORE::Runner::Param> param)
     {
-        auto &groupSameline = createWidget<GroupSameline>();
+        auto &groupSameline = createWidget<GroupSamelineEx>(param->m_name, false);
 
         groupSameline
             .createWidget<DragSingleScalar>("", param->m_value, param->m_typeId)
-            .setWidth(0.7f)
+            .setWidth(0.75f)
             .addPlugin<DataDispatcher<std::string>>()
             .registerReference(param->m_value);
 
         groupSameline
-            .createWidget<InputText>(param->m_name.c_str(), param->m_get.c_str())
+            .createWidget<InputText>("", param->m_get.c_str())
             .setSameline()
-            .setWidth(0.3f)
+            .setWidth(0.25f)
             .addPlugin<DataDispatcher<std::string>>()
             .registerReference(param->m_get);
+            
+        groupSameline.setSameline();
 
         createWidget<HelperMarker>(param->m_desc);
         return true;

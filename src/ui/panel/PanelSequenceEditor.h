@@ -3,6 +3,9 @@
 #include "APanel.h"
 #include "Event.h"
 
+#include <memory>
+
+
 class ImVec4;
 
 namespace TARDIS::CORE

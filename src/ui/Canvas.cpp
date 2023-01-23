@@ -66,8 +66,11 @@ namespace TARDIS::UI
                 style.WindowMinSize.x = 320.0f;
                // style.IndentSpacing   = 0.0f;
                 //style.FramePadding    = ImVec2(2.0f, 2.0f);
-                style.ScrollbarSize     = 6.0f;
+                style.ScrollbarSize     = 10.0f;
                 style.ScrollbarRounding = 0.0f;
+                style.WindowRounding = 4.0f;
+                style.FrameRounding = 2.0f;
+                style.GrabRounding = 2.0f;
 
                 if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
                 {
@@ -80,31 +83,31 @@ namespace TARDIS::UI
                 colors[ImGuiCol_ScrollbarBg] = colors[ImGuiCol_WindowBg];
                 colors[ImGuiCol_ScrollbarGrab] = colors[ImGuiCol_WindowBg];
 
-                // auto co = colors[ImGuiCol_ScrollbarGrabHovered];
-                // colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4{ co.x, co.y, co.z, 1.0f };
-                // colors[ImGuiCol_Header] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
-                // colors[ImGuiCol_HeaderHovered] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
-                // colors[ImGuiCol_HeaderActive] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                auto co = colors[ImGuiCol_ScrollbarGrabHovered];
+                colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4{ co.x, co.y, co.z, 1.0f };
+                colors[ImGuiCol_Header] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                colors[ImGuiCol_HeaderHovered] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                colors[ImGuiCol_HeaderActive] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
 
-                // colors[ImGuiCol_Button] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
-                // colors[ImGuiCol_ButtonHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
-                // colors[ImGuiCol_ButtonActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                colors[ImGuiCol_Button] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                colors[ImGuiCol_ButtonHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
+                colors[ImGuiCol_ButtonActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
 
-                // colors[ImGuiCol_Tab] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
-                // colors[ImGuiCol_TabHovered] = ImVec4{0.38f, 0.3805f, 0.381f, 1.0f};
-                // colors[ImGuiCol_TabActive] = ImVec4{0.28f, 0.2805f, 0.281f, 1.0f};
-                // colors[ImGuiCol_TabUnfocused] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
-                // colors[ImGuiCol_TabUnfocusedActive] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                colors[ImGuiCol_Tab] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                colors[ImGuiCol_TabHovered] = ImVec4{0.38f, 0.3805f, 0.381f, 1.0f};
+                colors[ImGuiCol_TabActive] = ImVec4{0.28f, 0.2805f, 0.281f, 1.0f};
+                colors[ImGuiCol_TabUnfocused] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                colors[ImGuiCol_TabUnfocusedActive] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
 
-                // // Frame BG
-                //colors[ImGuiCol_FrameBg] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
-                // colors[ImGuiCol_FrameBgHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
-                // colors[ImGuiCol_FrameBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                // Frame BG
+                colors[ImGuiCol_FrameBg] = ImVec4{0.2f, 0.205f, 0.21f, 1.0f};
+                colors[ImGuiCol_FrameBgHovered] = ImVec4{0.3f, 0.305f, 0.31f, 1.0f};
+                colors[ImGuiCol_FrameBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
 
-                // // Title
-                // colors[ImGuiCol_TitleBg] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
-                // colors[ImGuiCol_TitleBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
-                // colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                // Title
+                colors[ImGuiCol_TitleBg] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                colors[ImGuiCol_TitleBgActive] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
+                colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
 
                 //style.WindowMinSize.x = minWinSizeX;
 
@@ -114,19 +117,7 @@ namespace TARDIS::UI
                 }
 
                 {
-                    static float f = 0.0f;
-                    static int counter = 0;
-
                     ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
-
-                    ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-
-                    ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-                    if (ImGui::Button("Button"))                 // Buttons return true when clicked (most widgets return true when edited/activated)
-                        counter++;
-                    ImGui::SameLine();
-                    ImGui::Text("counter = %d", counter);
-
                     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
                     ImGui::End();
                 }

@@ -7,6 +7,8 @@
 //#include "PanelsManager.h"
 #include "WindowEditor.h"
 //#include "PanelWindow.h"
+#include "panel/PanelDemo.h"
+#include "panel/PanelWindow.h"
 #include "panel/PanelMenuBar.h"
 #include "panel/PanelSequenceEditor.h"
 #include "panel/PanelProperties.h"
@@ -83,78 +85,7 @@ namespace TARDIS::UI
         });
 		
 
-		// static std::shared_ptr<CORE::RapidJsonParser> parser = std::make_shared<CORE::RapidJsonParser>();
-		// parser->parseJsonFile("C:\\Users\\yangh\\Desktop\\Tardis\\bin\\Debug\\sequence.json");
-
-		// addPanel(UI::PanelsManager::CreatePanel<UI::SequenceEditView>("SequenceEditView"));
-		// addPanel(UI::PanelsManager::CreatePanel<UI::ModulesView>("ModulesView"));
-		// addPanel(UI::PanelsManager::CreatePanel<UI::RunnerProperty>("RunnerProperty"));
-
-
-
-		// std::string testName = parser->get<std::string>("sequences/name");
-
-
-		// auto& panel = UI::PanelsManager::GetPanelAs<UI::SequenceEditView>("SequenceEditView");
-
-		// auto& panel_modules_view = UI::PanelsManager::GetPanelAs<UI::ModulesView>("ModulesView");
-
-		// parser->nodeBegin("modules");
-		// panel_modules_view.onDeserialize(parser);
-		// parser->nodeEnd();
-
-		// if (parser->nodeBegin("sequences"))
-		// {
-		// 	CORE::Engine::onDeserialize(parser);
-		// 	parser->nodeEnd();
-		// }
-		// auto& property = UI::PanelsManager::GetPanelAs<UI::RunnerProperty>("RunnerProperty");
-		// property.addRunner(CORE::Engine::runnerList[0]);
-
-	/*	parser->nodeBegin("sequences");
-		panel.onDeserialize(parser);
-		parser->nodeEnd();*/
-
-		//addPanel(UI::PanelsManager::CreatePanel<UI::BurnInView>("BurnInView"));
-		//addPanel(UI::PanelsManager::CreatePanel<UI::TestView>("TestView"));
-		//addPanel(UI::PanelsManager::CreatePanel<UI::TestView>("TestView"));
-		//ImGuiContext* ctx = ImGui::GetCurrentContext();
-		//ImGuiDockContext* dc = &ctx->DockContext;
-		//ImGui::SaveIniSettingsToMemory();
-		//ImGuiID root_id = 0; // Rebuild all
-		//ImGui::DockContextClearNodes(ctx, root_id, false);
-
-		////ImGui::DockContextBuildNodesFromSettings(ctx, dc->NodesSettings.Data, dc->NodesSettings.Size);
-
-		//ImGuiDockNodeSettings* node_settings_array = dc->NodesSettings.Data;
-		//int node_settings_count = dc->NodesSettings.Size;
-		//for (int node_n = 0; node_n < node_settings_count; node_n++)
-		//{
-		//	ImGuiDockNodeSettings* settings = &node_settings_array[node_n];
-		//	if (settings->ID == 0)
-		//		continue;
-		//	ImGuiDockNode* node = DockContextAddNode(ctx, settings->ID);
-		//	node->ParentNode = settings->ParentNodeId ? DockContextFindNodeByID(ctx, settings->ParentNodeId) : NULL;
-		//	node->Pos = ImVec2(settings->Pos.x, settings->Pos.y);
-		//	node->Size = ImVec2(settings->Size.x, settings->Size.y);
-		//	node->SizeRef = ImVec2(settings->SizeRef.x, settings->SizeRef.y);
-		//	node->AuthorityForPos = node->AuthorityForSize = node->AuthorityForViewport = ImGuiDataAuthority_DockNode;
-		//	if (node->ParentNode && node->ParentNode->ChildNodes[0] == NULL)
-		//		node->ParentNode->ChildNodes[0] = node;
-		//	else if (node->ParentNode && node->ParentNode->ChildNodes[1] == NULL)
-		//		node->ParentNode->ChildNodes[1] = node;
-		//	node->SelectedTabId = settings->SelectedTabId;
-		//	node->SplitAxis = (ImGuiAxis)settings->SplitAxis;
-		//	node->SetLocalFlags(settings->Flags & ImGuiDockNodeFlags_SavedFlagsMask_);
-
-		//	// Bind host window immediately if it already exist (in case of a rebuild)
-		//	// This is useful as the RootWindowForTitleBarHighlight links necessary to highlight the currently focused node requires node->HostWindow to be set.
-		//	char host_window_title[20];
-		//	ImGuiDockNode* root_node = DockNodeGetRootNode(node);
-		//	node->HostWindow = FindWindowByName(DockNodeGetHostWindowTitle(root_node, host_window_title, IM_ARRAYSIZE(host_window_title)));
-		//}
-
-		//ImGui::DockContextBuildAddWindowsToNodes(context, root_id);
+		m_panelsManager.createPanel<PanelDemo>("PanelDemo");
 	}
 
 	void WindowEditor::setDockSpaceBegin()

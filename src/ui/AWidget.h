@@ -38,14 +38,15 @@ namespace TARDIS::UI
 
 		AWidget& setSameline();
 		
-		AWidget& setWidth(float w) ;
+		AWidget& setWidth(float w);
+
+		const float& getWidth() const;
 
 	protected:
 		virtual void drawImpl() = 0;
 
 	public:
 		bool  enabled = true;
-		float width   = 1.0f;
 		
 
 	protected:
@@ -58,6 +59,7 @@ namespace TARDIS::UI
 		static uint64_t ID_INCREMENT;
 		bool  m_destroyed = false;
 		bool  m_lineBreak = true;
+		float m_width = 0.0f;
 
 	};
 }

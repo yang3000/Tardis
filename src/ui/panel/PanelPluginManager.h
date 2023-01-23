@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
-
 #include "PanelWindow.h"
 #include "../layout/Collapsing.h"
 #include "Base.h"
 #include "Event.h"
+
+#include <vector>
+#include <memory>
 
 namespace TARDIS::CORE
 {

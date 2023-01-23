@@ -8,6 +8,7 @@
 
 #include "Event.h"
 #include "./PopupWindow.h"
+#include <memory>
 
 
 namespace TARDIS::UI

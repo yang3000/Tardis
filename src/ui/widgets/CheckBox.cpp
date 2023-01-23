@@ -12,8 +12,14 @@ namespace TARDIS::UI
 
     void CheckBox::drawImpl()
     {
+
+        auto itemWidth = ImGui::CalcItemWidth();
+
+       // ImGui::PushItemWidth(itemWidth * width);
         bool previousValue = m_value;
         ImGui::Checkbox((m_label + m_widgetID).c_str(), &m_value);
+		//ImGui::PopItemWidth();
+
         if (m_value != previousValue)
         {
             ValueChangedEvent.invoke(m_value);

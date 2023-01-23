@@ -64,7 +64,8 @@ namespace TARDIS::UI
 
 			
 
-			if (ImGui::Begin((m_name + m_panelID).c_str(), &m_opened, window_flags))
+			//if (ImGui::Begin((m_name + m_panelID).c_str(), &m_opened, window_flags))
+			ImGui::Begin((m_name + m_panelID).c_str(), &m_opened, window_flags);
 			{
 				if (!m_opened)
 				{
@@ -73,10 +74,10 @@ namespace TARDIS::UI
 				
 
 				drawWidgets();
+				
 			}
-				ImGui::End();
-
-			        ImGui::PopStyleVar(2);
+			ImGui::End();
+			ImGui::PopStyleVar(2);
 
 		}
 	}
