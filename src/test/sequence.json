@@ -18,12 +18,14 @@
       "global": false
     }
   ],
-  "setup":[
+  "setup": [
     {
       "name": "TestCommunication",
       "lock": true,
       "skip": false,
       "pause": false,
+      "limit":false,
+      "range":"123.345,456.22",
       "runner": {
         "module_id": 123456789,
         "method": "TestCommunication",
@@ -48,7 +50,7 @@
       }
     }
   ],
-  "cleanup":[
+  "cleanup": [
     {
       "name": "TestCommunication",
       "lock": true,
@@ -87,6 +89,10 @@
         "lock": true,
         "skip": false,
         "pause": false,
+        "limit": false,
+        "range":"123.345,456.22",
+        "lower": 123.20,
+        "upper": 456.34,
         "runner": {
           "type": "plugin",
           "module_id": 123456789,
@@ -157,7 +163,6 @@
               "value": "213123",
               "get": "imei",
               "desc": "imei..."
-              
             },
             {
               "param": "len",

@@ -129,8 +129,21 @@ namespace TARDIS::CORE
 			{
 				return false;
 			}
-            auto out = getOutput();
-            THREAD_LOG_INFO("get output value from runner:{}", out ? out : "");
+
+            if(m_hasLimit)
+            {
+                auto out = getOutput();
+                if(out == nullptr)
+                {
+                    THREAD_LOG_ERROR("output value is nullptr");
+                    return false;
+                }
+
+                THREAD_LOG_INFO("{:.3f}-{}-{:.3f}", m_lower, out ? out : "", m_upper);
+
+                float val = ValueHelper<float>::from(out);
+                
+            }
 		}
 		return true;
 	}
@@ -142,6 +155,11 @@ namespace TARDIS::CORE
 		setLock(json_node->get<bool>("lock"));
 		setSkip(json_node->get<bool>("skip"));
 		setPaused(json_node->get<bool>("pause"));
+		setLimit(json_node->get<bool>("limit"));
+
+        char rangeBuf[2][64];
+        Helper::SplitString(json_node->get<std::string>("range").c_str(), ",", rangeBuf);
+        setRange(ValueHelper<float>::from(rangeBuf[0]), ValueHelper<float>::from(rangeBuf[1]));
 
         if (json_node->nodeBegin("runner"))
         {
@@ -179,15 +197,19 @@ namespace TARDIS::CORE
         json_writer.Key("lock");        json_writer.Bool(m_lock);
         json_writer.Key("skip");        json_writer.Bool(m_skip);
         json_writer.Key("pause");       json_writer.Bool(m_paused);
+        json_writer.Key("limit");       json_writer.Bool(m_hasLimit);
 
-        json_writer.Key("runner");
+        auto range = ValueHelper<float>::toString(m_lower) + "," + ValueHelper<float>::toString(m_upper);
+        json_writer.Key("range");       json_writer.String(range);
 
+        json_writer.Key("runner");      
         json_writer.StartObject();
 
         json_writer.Key("module_id");   json_writer.Int64(m_moduleId);
         json_writer.Key("method");      json_writer.String(m_caller);
-        json_writer.Key("input");
+        json_writer.Key("input");       
         json_writer.StartArray();
+
         for (auto param : m_params)
         {
             json_writer.StartObject();

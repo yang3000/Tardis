@@ -4,8 +4,10 @@
 #include "../imgui/imgui_internal.h"
 
 #include "Text.h"
+#include "TextColored.h"
 #include "CheckBox.h"
 #include "ComboBox.h"
+#include "ComboBoxT.h"
 #include "DragSingleScalar.h"
 #include "DragScalarRange.h"
 #include "InputText.h"
@@ -50,9 +52,20 @@ namespace TARDIS::UI
                 }
             });
             pAWidgetLimitGroup->createWidget<Separator>();
-            pAWidgetLimitGroup->createWidget<ComboBox>("", 11).setWidth(0.5f);
+            pAWidgetLimitGroup->createWidget<ComboBoxT<TardisDataType>>("Type", TardisDataType_COUNT)
+            .addElement(CORE::ValueHelper<char>::Type, CORE::ValueHelper<char>::getDataTypeName())
+            .addElement(CORE::ValueHelper<unsigned char>::Type, CORE::ValueHelper<unsigned char>::getDataTypeName())
+            .addElement(CORE::ValueHelper<int>::Type, CORE::ValueHelper<int>::getDataTypeName())
+            .addElement(CORE::ValueHelper<unsigned int>::Type, CORE::ValueHelper<unsigned int>::getDataTypeName())
+            .addElement(CORE::ValueHelper<long>::Type, CORE::ValueHelper<long>::getDataTypeName())
+            .addElement(CORE::ValueHelper<float>::Type, CORE::ValueHelper<float>::getDataTypeName())
+            .addElement(CORE::ValueHelper<double>::Type, CORE::ValueHelper<double>::getDataTypeName());
+
             pAWidgetLimitGroup->createWidget<DragSingleScalar>("Speed", "1.0", ImGuiDataType_Float, "0.01,100.0", "%.5f", 0.01f).setWidth(0.5f);
-            pAWidgetLimitGroup->createWidget<DragScalarRange>("Range", "123,456", "0,0", ImGuiDataType_Float);
+            pAWidgetLimitGroup->createWidget<DragScalarRange>("Range", "123,456", "0,0", ImGuiDataType_Float)
+            .ChangedEvent
+            .addListener([](std::string range){
+            });
             pAWidgetLimitGroup->enabled = tRunner->getLimitStatus();
             createWidget<Separator>();
 
@@ -63,7 +76,7 @@ namespace TARDIS::UI
             // });
 
             //pAWidgetLimit = &createWidget<DragScalarRange>("Float", "123,456", "0,0", ImGuiDataType_Float);
-
+            createWidget<TextColored>("Caller information", ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
             createWidget<Text>(tRunner->getCallerName());
 
             auto params = tRunner->getParams();
@@ -83,39 +96,24 @@ namespace TARDIS::UI
                 case TardisDataType_Double:
                 case TardisDataType_Bool:
                 {
-                    // auto& groupSameline = createWidget<GroupSameline>();
-                    // groupSameline
-                    // .createWidget<DragSingleScalar>("", p->m_value, p->m_typeId, 0.5f)
-                    // //.setSameline()
-                    // .setWidth(0.7f)
-                    // .addPlugin<DataDispatcher<std::string>>()
-                    // .registerReference(p->m_value);
-                    // groupSameline
-                    // .createWidget<InputText>(p->m_name.c_str(), p->m_get.c_str())
-                    // .setSameline()
-                    // .setWidth(0.3f)
-                    // .addPlugin<DataDispatcher<std::string>>()
-                    // .registerReference(p->m_get);
-                    // createWidget<HelperMarker>(p->m_desc);
-
                     createNumericalWidget(p);
                     break;
                 }
                 case TardisDataType_String:
                 {
-                    auto& groupSameline = createWidget<GroupSamelineEx>(p->m_name, false);
+                    auto& groupSameline = createWidget<GroupSamelineEx>(p->m_name);
 
                     groupSameline
                     .createWidget<InputText>("", p->m_value.c_str())
                     //.setSameline()
-                    .setWidth(0.75f)
+                    //.setWidth(0.75f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_value);
 
                     groupSameline
                     .createWidget<InputText>("", p->m_get.c_str())
                     .setSameline()
-                    .setWidth(0.25f)
+                    //.setWidth(0.25f)
                     .addPlugin<DataDispatcher<std::string>>()
                     .registerReference(p->m_get);
 
@@ -160,7 +158,7 @@ namespace TARDIS::UI
 
     bool WidgetRunnerProperty::createNumericalWidget(std::shared_ptr<CORE::Runner::Param> param)
     {
-        auto &groupSameline = createWidget<GroupSamelineEx>(param->m_name, false);
+        auto &groupSameline = createWidget<GroupSamelineEx>(param->m_name);
 
         groupSameline
             .createWidget<DragSingleScalar>("", param->m_value, param->m_typeId)
@@ -170,11 +168,11 @@ namespace TARDIS::UI
 
         groupSameline
             .createWidget<InputText>("", param->m_get.c_str())
-            .setSameline()
+            //.setSameline()
             .setWidth(0.25f)
             .addPlugin<DataDispatcher<std::string>>()
             .registerReference(param->m_get);
-            
+
         groupSameline.setSameline();
 
         createWidget<HelperMarker>(param->m_desc);
@@ -186,26 +184,7 @@ namespace TARDIS::UI
         auto runner = m_runner.lock();
         if(runner)
         {
-            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Params");
-            // static char content[128];
-            // ImGui::Button("43453");
-            // ImGui::SameLine();
-            // ImGui::InputText("345345", content, sizeof(content));
-            // ImGui::InputText("345345##111", content, sizeof(content));
-
-            // ImGuiStyle& style = ImGui::GetStyle();
-            // float w = IM_FLOOR((ImGui::CalcItemWidth() - style.ItemSpacing.x) * 0.7f);
-            // ImGui::PushItemWidth(w);
-			// ImGui::InputText("##23", content, sizeof(content));
-			// ImGui::PopItemWidth();
-            // ImGui::SameLine();
-            // ImGui::PushItemWidth(ImGui::CalcItemWidth() - w - style.ItemSpacing.x);
-			// ImGui::InputText("345345##2322", content, sizeof(content));
-			// ImGui::PopItemWidth();
-
-            // static float vec4f[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
-            // ImGui::DragFloat2("drag float2", vec4f, 0.01f, 0.0f, 1.0f);
-
+            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "Basic information");
             drawWidgets();
         }
 	}

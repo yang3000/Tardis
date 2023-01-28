@@ -84,6 +84,17 @@ namespace TARDIS::UI
         ImGui::EndGroup();
         ImGui::PopID();
 
+        if(value_changed)
+        {
+            char value_min_buf[64];
+            char value_max_buf[64];
+            ImGui::DataTypeFormatString(value_min_buf, IM_ARRAYSIZE(value_min_buf), m_dataType, (void *)&m_current_min, ImGui::DataTypeGetInfo(m_dataType)->PrintFmt);
+            ImGui::DataTypeFormatString(value_max_buf, IM_ARRAYSIZE(value_max_buf), m_dataType, (void *)&m_current_max, ImGui::DataTypeGetInfo(m_dataType)->PrintFmt);
+            char range_buf[128];
+            sprintf_s(range_buf, sizeof(range_buf), "%s,%s", value_min_buf, value_max_buf);
+            ChangedEvent.invoke(range_buf);
+        }
+
 
 // if(ImGui::DragScalar((m_label + m_widgetID).c_str(), m_dataType, (void*)&m_value, m_speed))
 //         {

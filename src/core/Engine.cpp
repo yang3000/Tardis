@@ -125,7 +125,7 @@ namespace TARDIS::CORE
 			if (!res) {
 				// RunnerEventArgs event_error(m_curRunner, std::string("execute node[") + m_curRunner->m_name + "] fail");
 				// fireEvent(EventRunnerError, event_error);
-				break;
+				//break;
 			}
 			// RunnerEventArgs event_end(m_curRunner);
 			// fireEvent(EventRunnerEnd, event_end);

@@ -41,6 +41,7 @@ namespace TARDIS::UI
 				ImGui::PushItemWidth(-FLT_MIN);
 				m_widgets[i]->draw();
 			}
+			ImGui::SameLine();
 			ImGui::EndTable();
 		}
 		ImGui::PopItemWidth();

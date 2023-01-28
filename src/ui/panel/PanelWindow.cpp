@@ -60,6 +60,7 @@ namespace TARDIS::UI
 			//static bool open = true;
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 4.0f));
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 8.0f));
 			ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 16.0f);
 
 			
@@ -77,7 +78,7 @@ namespace TARDIS::UI
 				
 			}
 			ImGui::End();
-			ImGui::PopStyleVar(2);
+			ImGui::PopStyleVar(3);
 
 		}
 	}

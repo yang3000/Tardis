@@ -3,29 +3,23 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
 
-
 namespace TARDIS::UI
 {
+	GroupChild::GroupChild(float padding_h, float padding_v)
+		: m_padding_h(padding_h)
+		, m_padding_v(padding_v)
+	{}
+	
 	void GroupChild::drawImpl()
 	{
-    //ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 8.0f));
-
-    // ImGuiStyleVar_ItemInnerSpacing,    // ImVec2    ItemInnerSpacing
-    // ImGuiStyleVar_IndentSpacing,       // float     IndentSpacing
-    // ImGuiStyleVar_CellPadding,         // ImVec2    CellPadding
-
-		ImGuiWindowFlags window_flags =  ImGuiWindowFlags_AlwaysVerticalScrollbar /* | ImGuiWindowFlags_AlwaysAutoResize */ | ImGuiWindowFlags_NoMove;
-		if(ImGui::BeginChild(m_widgetID.c_str(), ImVec2(0, 0), false, window_flags))
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(m_padding_h, m_padding_v));
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_AlwaysAutoResize;
+		if (ImGui::BeginChild(m_widgetID.c_str(), ImVec2(0, 0), false, window_flags))
 		{
+
 			drawWidgets();
 		}
 		ImGui::EndChild();
-
-		//ImGui::BeginChildFrame(ImGui::GetID(m_widgetID.c_str()), ImVec2(0, 0), window_flags);
-		// drawWidgets();
-		// ImGui::EndChild();
-		//ImGui::EndChildFrame();
-		//ImGui::PopStyleVar();
-
+		ImGui::PopStyleVar();
 	}
 }

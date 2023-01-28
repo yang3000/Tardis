@@ -32,6 +32,7 @@ set( CORE_SOURCE_FILES
     ../ui/layout/TreeNode.cpp
     ../ui/layout/PopupWindow.cpp
     ../ui/layout/Group.cpp
+    ../ui/layout/GroupTable.cpp
     
     ../ui/widgets/WidgetRunnerProperty.cpp
     ../ui/widgets/CheckBox.cpp
@@ -49,6 +50,7 @@ set( CORE_SOURCE_FILES
     ../ui/widgets/Caller.cpp
     ../ui/widgets/NewPlugin.cpp
     ../ui/widgets/TestItemList.cpp
+    ../ui/widgets/TestBoard.cpp
     
     ../ui/panel/PanelWindow.cpp
     ../ui/panel/PanelDemo.cpp

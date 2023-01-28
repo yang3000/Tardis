@@ -93,7 +93,8 @@
     "xutility": "cpp",
     "*.rh": "cpp",
     "filesystem": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "coroutine": "cpp"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

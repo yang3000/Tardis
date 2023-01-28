@@ -79,26 +79,14 @@ namespace TARDIS::CORE
 
 		bool OnSerialize(CORE::RapidJsonParser::Writer &json_writer);
 
-
 		bool exec(Engine* engine);
-
-		// const Getter& getValue(const int index) const
-		// {
-		// 	return m_inputs[index];
-		// };
-
-		// void addParam(Getter getter)
-		// {
-		// 	m_inputs.emplace_back(getter);
-		// }
-
-		// void setFunctorData(std::string type, std::string moduleId, std::string functor);
-
 
 		void setTimes(unsigned int times) { m_times = times; }
 		void setSkip(bool skip) { m_skip = skip; };
 		void setPaused(bool paused) { m_paused = paused; }
 		void setLock(bool lock) { m_lock = lock; }
+		void setLimit(bool limit) { m_hasLimit = limit; }
+		void setRange(float lower, float upper) { m_lower = lower; m_upper = upper; }
 		void setName(std::string name) { m_name = name; }
 		void setId(std::string id) { m_id = id.empty() ? Helper::GenerateHex() : id; }
 		void setModuleId(uint64_t id) { m_moduleId = id; };
@@ -113,11 +101,10 @@ namespace TARDIS::CORE
 		const uint64_t& getModuleId() const { return m_moduleId; }
 		const std::string& getCallerName() const { return m_caller; }
 
-        void output(const std::string& v) {
+        void output(const std::string& v) 
+		{
 			std::lock_guard<std::mutex> lock(m_mutexOutput);
-			//auto key = Helper::getThreadId();
 			m_output[Helper::getThreadId()] = v;
-			//m_output.emplace(Helper::getThreadId(), v); 
 		}
 		
         const char* getOutput() const 
@@ -148,10 +135,11 @@ namespace TARDIS::CORE
 		bool     m_skip;
 		bool     m_paused;
 		bool     m_lock;   
-
         bool     m_isActived;
-
 		bool     m_hasLimit;
+
+		float    m_lower{0.0f};
+		float    m_upper{0.0f};
 
 		std::string  m_name;
 		std::string  m_id;

@@ -50,7 +50,6 @@ namespace TARDIS::UI
         TDS_LOG_INFO(m_json_parser->get("version"));
 
         m_engineRunTest->RunnerFinishEvent.addListener(std::bind(&PanelTestStand::onAddTestResult, this, std::placeholders::_1));
-
         m_engineRunTest->EngineBeginEvent.addListener([this]{ m_engineIsRunning = true;});
         m_engineRunTest->EngineEndEvent.addListener([this]{ m_engineIsRunning = false;});
 
@@ -131,7 +130,7 @@ namespace TARDIS::UI
         if (ImGui::BeginTable("Sequences", 7,  flagsSequence))
         {
             ImGui::TableSetupScrollFreeze(0, 1);
-            ImGui::TableSetupColumn("Index");
+            ImGui::TableSetupColumn("Id");
             ImGui::TableSetupColumn("Item");
             ImGui::TableSetupColumn("Desc");
             ImGui::TableSetupColumn("Lower");

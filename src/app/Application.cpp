@@ -16,8 +16,8 @@ namespace TARDIS::UI
 		m_renderDevice = std::make_unique<DirectX12Device>();
 		m_renderDevice->initWindow();
 		//m_currentWindow = WindowsManager::Create<CORE::WindowEditor>("Editor");
-		m_currentWindow = new WindowEditor();
-		//m_currentWindow = new WindowTestStand();
+		//m_currentWindow = new WindowEditor();
+		m_currentWindow = new WindowTestStand();
 	}
 
 	Application::~Application()

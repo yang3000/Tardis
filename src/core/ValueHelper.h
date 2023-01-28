@@ -285,7 +285,7 @@ namespace TARDIS::CORE
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%f", val);
+			snprintf(buff, sizeof(buff), "%.3f", val);
 			return std::string(buff);
 		}
 	};
@@ -323,7 +323,7 @@ namespace TARDIS::CORE
 		static inline string_return_type toString(pass_type val)
 		{
 			char buff[64];
-			snprintf(buff, sizeof(buff), "%f", val);
+			snprintf(buff, sizeof(buff), "%.5f", val);
 			return std::string(buff);
 		}
 	};
